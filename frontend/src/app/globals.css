@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: #fbfef9ff;
+  --secondary-color: #191923ff;
+  --accent-color: #0e79b2ff;
+  --pop-color: #bf1363ff;
+  --action-color: #f39237ff;
+}
+
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+} */
+
+* {
+  color: var(--primary-color);
+  box-sizing: border-box;
+}
+
+input, textarea { 
+  all: unset;
+  border: 1px solid var(--primary-color);
+}
+
+.btn {
+  @apply bg-primary-color text-secondary-color rounded p-2 mt-2;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}

@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int           @id @default(autoincrement())
+  email            String        @unique
+  fullName         String
+  password         String
+  profilePic       String?
+  preferences      Preferences?
+  sentMessages     Message[]     @relation("SentMessages")
+  receivedMessages Message[]     @relation("ReceivedMessages")
+  events           Event[]       @relation("UserEvents")
+  rsvps            RSVP[]
+  interested       Interest[]
+  reports          Report[]
+  blockedUsers     BlockedUser[] @relation("UserBlocking")
+  blockedByUsers   BlockedUser[] @relation("UserBlocked")
+}
+
+model Preferences {
+  id             Int     @id @default(autoincrement())
+  userId         Int     @unique
+  user           User    @relation(fields: [userId], references: [id])
+  rsvpVisibility Boolean @default(true)
+}
+
+model Message {
+  id         Int      @id @default(autoincrement())
+  senderId   Int
+  receiverId Int
+  content    String
+  createdAt  DateTime @default(now())
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
+  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  date        DateTime
+  startTime   DateTime
+  endTime     DateTime
+  hostId      Int
+  host        User     @relation("UserEvents", fields: [hostId], references: [id])
+  image       String?
+
+  // Add the reverse relationships
+  rsvps      RSVP[]     @relation("EventRSVPs")
+  interested Interest[] @relation("EventInterests")
+  reports    Report[]   @relation("EventReports")
+}
+
+model RSVP {
+  id      Int   @id @default(autoincrement())
+  userId  Int
+  eventId Int
+  user    User  @relation(fields: [userId], references: [id])
+  event   Event @relation("EventRSVPs", fields: [eventId], references: [id])
+}
+
+model Interest {
+  id      Int   @id @default(autoincrement())
+  userId  Int
+  eventId Int
+  user    User  @relation(fields: [userId], references: [id])
+  event   Event @relation("EventInterests", fields: [eventId], references: [id])
+}
+
+model Report {
+  id      Int   @id @default(autoincrement())
+  userId  Int
+  eventId Int
+  user    User  @relation(fields: [userId], references: [id])
+  event   Event @relation("EventReports", fields: [eventId], references: [id])
+}
+
+model BlockedUser {
+  id        Int @id @default(autoincrement())
+  blockerId Int
+  blockedId Int
+
+  blocker User @relation("UserBlocking", fields: [blockerId], references: [id])
+  blocked User @relation("UserBlocked", fields: [blockedId], references: [id])
+}
