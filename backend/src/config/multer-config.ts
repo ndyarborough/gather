@@ -9,4 +9,10 @@ export const multerConfig = {
       callback(null, uniqueSuffix + extname(file.originalname));
     },
   }),
+  //  fileFilter: (req, file, callback) => {
+  //   if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) { // Accept only image files
+  //     return callback(new Error('Only image files are allowed'), false);
+  //   }
+  //   callback(null, true);
+  // },
 };

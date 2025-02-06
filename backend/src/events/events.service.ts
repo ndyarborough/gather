@@ -14,7 +14,7 @@ export class EventsService {
         date: new Date(createEventDto.date),
         startTime: new Date(`${createEventDto.date}T${createEventDto.startTime}:00Z`),
         endTime: new Date(`${createEventDto.date}T${createEventDto.endTime}:00Z`),
-        hostId: createEventDto.hostId,
+        hostId: parseInt(createEventDto.hostId as unknown as string, 10), // Convert to integer
         image: imagePath,
       },
     });

@@ -3,14 +3,14 @@ import { IsEmail, IsNotEmpty, MinLength, IsOptional } from 'class-validator';
 export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty()
-  email: string;
+  email!: string;
 
   @IsNotEmpty()
-  fullName: string;
+  fullName!: string;
 
   @IsNotEmpty()
   @MinLength(6)
-  password: string;
+  password!: string;
 
   @IsOptional()
   profilePic?: string; // This will store the file path
