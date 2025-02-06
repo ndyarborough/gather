@@ -3,27 +3,27 @@ import { IsNotEmpty, IsOptional, IsString, IsDateString, IsInt } from 'class-val
 export class CreateEventDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  name!: string;
 
   @IsString()
   @IsNotEmpty()
-  description: string;
+  description!: string;
 
   @IsDateString()
   @IsNotEmpty()
-  date: string;
+  date!: string;
 
   @IsString()
   @IsNotEmpty()
-  startTime: string;
+  startTime!: string;
 
   @IsString()
   @IsNotEmpty()
-  endTime: string;
+  endTime!: string;
 
   @IsInt()
   @IsNotEmpty()
-  hostId: number;
+  hostId!: number;
 
   @IsOptional()
   @IsString()
