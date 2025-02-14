@@ -30,6 +30,7 @@ export default function Page() {
     <div className="app flex flex-row gap-4 bg-secondary-color min-h-screen text-secondary-color w-screen p-8">
       <CreateEvent user={user} />
       <CreateUser />
+      {!user && <CreateUser />}
       <Profile user={user} setUser={handleSetUser} />
       <Events userId={user?.userId || null} />
       <Inbox setReceiver={setReceiver} userId={user?.userId || null} />

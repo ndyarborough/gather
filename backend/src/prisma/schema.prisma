@@ -69,6 +69,7 @@ model RSVP {
   id      Int   @id @default(autoincrement())
   userId  Int
   eventId Int
+  createdAt DateTime @default(now())
   user    User  @relation(fields: [userId], references: [id])
   event   Event @relation("EventRSVPs", fields: [eventId], references: [id])
 }

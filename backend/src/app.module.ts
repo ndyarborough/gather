@@ -6,6 +6,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path'; // Import join
 import { MessagesModule } from './messages/messages.module';
+import { RsvpsModule } from './rsvps/rsvps.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { MessagesModule } from './messages/messages.module';
       serveRoot: '/uploads', // URL path to access the static files
     }),
     MessagesModule,
+    RsvpsModule,
   ],
 })
-export class AppModule { }
+export class AppModule {}

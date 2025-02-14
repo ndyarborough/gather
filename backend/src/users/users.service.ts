@@ -1,40 +1,47 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { LoginUserDto } from './dto/login-user.dto';
-import { UpdateProfilePicDto } from './dto/update-profile-pic.dto';
-import { User } from '@prisma/client';  // Import User from Prisma Client
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   // Register User
-  async create(createUserDto: CreateUserDto, profilePic?: string) {
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+  async create(
+    email: string,
+    fullName: string,
+    password: string,
+    profilePic?: string,
+  ) {
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     return this.prisma.user.create({
       data: {
-        email: createUserDto.email,
-        fullName: createUserDto.fullName,
+        email,
+        fullName,
         password: hashedPassword,
-        profilePic
+        profilePic, // Stores only filename if profilePic is provided
       },
     });
   }
 
   // Login User
-  async login(loginUserDto: LoginUserDto) {
+  async login(email: string, password: string) {
     const user = await this.prisma.user.findUnique({
-      where: { email: loginUserDto.email },
+      where: { email },
     });
 
-    if (!user || !(await bcrypt.compare(loginUserDto.password, user.password))) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    return { message: 'Login successful', userId: user.id, email: user.email, fullName: user.fullName, profilePic: user.profilePic };
+    return {
+      message: 'Login successful',
+      userId: user.id,
+      email: user.email,
+      fullName: user.fullName,
+      profilePic: user.profilePic,
+    };
   }
 
   // Update Profile Pic

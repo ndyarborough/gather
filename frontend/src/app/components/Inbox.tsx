@@ -22,6 +22,31 @@ const Inbox = ({ setReceiver, userId }: { userId: string; setReceiver: (receiver
 
   useEffect(() => {
     if (!userId) return;
+    const groupMessages = (messages: Message[]): Thread[] => {
+      const threadsMap: { [key: string]: Message[] } = {};
+  
+      messages.forEach((message) => {
+        if (message.senderId === userId || message.receiverId === userId) {
+          const participantId = message.senderId === userId ? message.receiverId : message.senderId;
+  
+          if (!threadsMap[participantId]) {
+            threadsMap[participantId] = [];
+          }
+          threadsMap[participantId].push(message);
+        }
+      });
+  
+      return Object.entries(threadsMap).map(([participantId, messages]) => {
+        const mostRecentMessage = messages.reduce((latest, current) => {
+          return new Date(latest.createdAt) > new Date(current.createdAt) ? latest : current;
+        });
+        return {
+          id: participantId,
+          participantId,
+          mostRecentMessage,
+        };
+      });
+    };
 
     fetch(`http://localhost:3001/api/messages/${userId}`)
       .then((res) => {
@@ -42,31 +67,7 @@ const Inbox = ({ setReceiver, userId }: { userId: string; setReceiver: (receiver
       });
   }, [userId]);
 
-  const groupMessages = (messages: Message[]): Thread[] => {
-    const threadsMap: { [key: string]: Message[] } = {};
-
-    messages.forEach((message) => {
-      if (message.senderId === userId || message.receiverId === userId) {
-        const participantId = message.senderId === userId ? message.receiverId : message.senderId;
-
-        if (!threadsMap[participantId]) {
-          threadsMap[participantId] = [];
-        }
-        threadsMap[participantId].push(message);
-      }
-    });
-
-    return Object.entries(threadsMap).map(([participantId, messages]) => {
-      const mostRecentMessage = messages.reduce((latest, current) => {
-        return new Date(latest.createdAt) > new Date(current.createdAt) ? latest : current;
-      });
-      return {
-        id: participantId,
-        participantId,
-        mostRecentMessage,
-      };
-    });
-  };
+  
 
   return (
     <div className="flex flex-col border-2 border-primary-color w-fit p-4">

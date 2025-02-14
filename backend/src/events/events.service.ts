@@ -1,20 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateEventDto } from './dto/create-event.dto';
 
 @Injectable()
 export class EventsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createEvent(createEventDto: CreateEventDto, imagePath?: string) {
+  async createEvent(
+    name: string,
+    description: string,
+    date: Date,
+    startTime: Date,
+    endTime: Date,
+    hostId: string,
+    imagePath?: string,
+  ) {
     return this.prisma.event.create({
       data: {
-        name: createEventDto.name,
-        description: createEventDto.description,
-        date: new Date(createEventDto.date),
-        startTime: new Date(`${createEventDto.date}T${createEventDto.startTime}:00Z`),
-        endTime: new Date(`${createEventDto.date}T${createEventDto.endTime}:00Z`),
-        hostId: parseInt(createEventDto.hostId as unknown as string, 10), // Convert to integer
+        name,
+        description,
+        date: new Date(date),
+        startTime: new Date(`${date}T${startTime}:00Z`),
+        endTime: new Date(`${date}T${endTime}:00Z`),
+        hostId: parseInt(hostId as unknown as string, 10), // Convert to integer
         image: imagePath,
       },
     });

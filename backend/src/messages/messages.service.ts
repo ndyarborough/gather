@@ -9,18 +9,15 @@ export class MessagesService {
   async getUserMessages(userId: number) {
     return this.prisma.message.findMany({
       where: {
-        OR: [
-          { senderId: userId },
-          { receiverId: userId }
-        ]
+        OR: [{ senderId: userId }, { receiverId: userId }],
       },
       include: {
         sender: true,
         receiver: true,
       },
       orderBy: {
-        createdAt: 'asc'
-      }
+        createdAt: 'asc',
+      },
     });
   }
 
@@ -55,7 +52,7 @@ export class MessagesService {
       data: {
         senderId,
         receiverId: receiverId,
-        content: "Hi",
+        content: 'Hi',
         ...(eventId ? { eventId } : {}), // Only add eventId if it's provided
       },
     });
