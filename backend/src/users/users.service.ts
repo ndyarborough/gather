@@ -36,8 +36,7 @@ export class UsersService {
     }
 
     return {
-      message: 'Login successful',
-      userId: user.id,
+      id: user.id,
       email: user.email,
       fullName: user.fullName,
       profilePic: user.profilePic,

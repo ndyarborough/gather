@@ -12,7 +12,7 @@ interface EventFormData {
 }
 
 interface CreateEventProps {
-  user: { userId: number } | null;
+  user: { id: string } | null;
 }
 
 export default function CreateEvent({ user }: CreateEventProps) {
@@ -56,7 +56,7 @@ export default function CreateEvent({ user }: CreateEventProps) {
     formDataToSend.append("date", formData.date); // Add event date
     formDataToSend.append("startTime", formData.startTime); // Add start time
     formDataToSend.append("endTime", formData.endTime); // Add end time
-    formDataToSend.append("hostId", user.userId.toString()); // Add hostId behind the scenes
+    formDataToSend.append("hostId", user.id.toString()); // Add hostId behind the scenes
   
     if (formData.image) {
       formDataToSend.append("image", formData.image); // Add image

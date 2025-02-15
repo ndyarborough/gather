@@ -7,7 +7,7 @@ export class MessagesController {
 
   // Get all messages for a user
   @Get(':userId')
-  async getUserMessages(@Param('userId') userId: string) {
+  async getUserMessages(@Param('userId') userId: number) {
     return this.messagesService.getUserMessages(Number(userId));
   }
 

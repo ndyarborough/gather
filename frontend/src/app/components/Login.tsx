@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { login } from "../../../api/api";
+import { SafeUser } from "../../../../shared-types";
 
 interface LoginProps {
-  setUser: (user: any) => void;
+  setUser: (user: SafeUser | null) => void;
 }
 
 export default function Login({ setUser }: LoginProps) {
@@ -13,23 +15,14 @@ export default function Login({ setUser }: LoginProps) {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    try {
-      const response = await fetch("http://localhost:3001/api/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!response.ok) throw new Error("Invalid credentials");
-
-      const data = await response.json();
-      setUser(data); // Store the user in state
-      console.log("Login successful!", data);
-    } catch (error) {
-      setMessage('Incorrect Username/Password');
+    const userData = await login(email, password);
+    console.log(userData)
+    if(userData.message) {
+      setMessage(userData.message);
+      console.log('setting messge')
+    } else {
+      setUser(userData); // Store the user in state
+      console.log("Login successful!", userData);
     }
   };
 

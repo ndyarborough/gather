@@ -1,6 +1,7 @@
 "use client" 
 
 import { useState, useEffect } from "react";
+import { SafeUser } from "../../../../shared-types";
 
 interface Message {
   id: string;
@@ -11,11 +12,11 @@ interface Message {
 }
 
 const SendMessage = ({
-    userId,
+    id,
     receiver,
   }: {
-    userId: string;
-    receiver: { id: string; name: string } | null;  // Accept the full receiver object
+    id: string;
+    receiver: SafeUser;  // Accept the full receiver object
   }) => {
     const [messageContent, setMessageContent] = useState<string>("");
     const [messages, setMessages] = useState<Message[]>([]);
@@ -23,9 +24,9 @@ const SendMessage = ({
   
     // Fetch the message history when component mounts or when receiver changes
     useEffect(() => {
-      if (!userId || !receiver) return;
+      if (!id || !receiver) return;
   
-      fetch(`http://localhost:3001/api/messages/${userId}/${receiver.id}`)
+      fetch(`http://localhost:3001/api/messages/${id}/${receiver.id}`)
         .then((res) => {
           if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
           return res.json();
@@ -37,7 +38,7 @@ const SendMessage = ({
           console.error("Error fetching message history:", err);
           setError("Failed to load message history.");
         });
-    }, [userId, receiver]);
+    }, [id, receiver]);
   
     const handleSendMessage = () => {
       if (!messageContent.trim()) {
@@ -46,7 +47,7 @@ const SendMessage = ({
       }
   
       const messageData = {
-        senderId: userId,
+        senderId: id,
         receiverId: receiver?.id,
         content: messageContent,
       };
@@ -75,7 +76,7 @@ const SendMessage = ({
     return (
       <div className="flex flex-col border-2 border-primary-color w-fit p-4">
         <h2 className="text-xl font-bold mb-4">
-          {receiver ? `Message Thread with ${receiver.name}` : "Send Message"}
+          {receiver ? `Message Thread with ${receiver.fullName}` : "Send Message"}
         </h2>
   
         {!receiver ? (
@@ -91,9 +92,9 @@ const SendMessage = ({
                 messages.map((message) => (
                   <div
                     key={message.id}
-                    className={`py-1 ${message.senderId === userId ? "text-blue-600" : "text-gray-700"}`}
+                    className={`py-1 ${message.senderId === id ? "text-blue-600" : "text-gray-700"}`}
                   >
-                    <strong>{message.senderId === userId ? "You" : "Them"}:</strong> {message.content}
+                    <strong>{message.senderId === id ? "You" : "Them"}:</strong> {message.content}
                   </div>
                 ))
               )}

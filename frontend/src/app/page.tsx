@@ -1,4 +1,4 @@
-"use client" 
+"use client";
 
 import { useState, useEffect } from "react";
 import CreateEvent from "./components/CreateEvent";
@@ -8,36 +8,44 @@ import Login from "./components/Login";
 import Events from "./components/Events";
 import Inbox from "./components/Inbox";
 import SendMessage from "./components/SendMessage";
+import { SafeUser } from "../../../shared-types";
 
 export default function Page() {
-  const [user, setUser] = useState<any>(null);  // Use `any` or a defined type for `user`
-  const [receiver, setReceiver] = useState<any>(null);
-
+  const [user, setUser] = useState<SafeUser | null>(null); // Use `any` or a defined type for `user`
+  const [receiver, setReceiver] = useState<SafeUser | null>(null);
   useEffect(() => {
-    // Check if user data exists in localStorage
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    const checkStorage = async () => {
+      const storedUser = await localStorage.getItem("user");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    };
+    checkStorage();
   }, []);
 
-  const handleSetUser = (userData: any) => {
+  const handleSetUser = (userData: SafeUser | null) => {
+    console.log("setting user");
     setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData)); // Store user in localStorage
   };
 
   return (
     <div className="app flex flex-row gap-4 bg-secondary-color min-h-screen text-secondary-color w-screen p-8">
-      <CreateEvent user={user} />
-      <CreateUser />
-      {!user && <CreateUser />}
-      <Profile user={user} setUser={handleSetUser} />
-      <Events userId={user?.userId || null} />
-      <Inbox setReceiver={setReceiver} userId={user?.userId || null} />
-      {!user && <Login setUser={handleSetUser} />}
-      
-      {/* Only show SendMessage if receiver is selected */}
-      {receiver && <SendMessage receiver={receiver} userId={user?.userId || null} />}
+      {!user ? (
+        <>
+          <CreateUser />
+          <Login setUser={handleSetUser} />
+          <CreateUser />
+        </>
+      ) : (
+        <>
+          <CreateEvent user={user} />
+          <Profile user={user} setUser={setUser} />
+          <Events id={user.id} />
+          <Inbox setReceiver={setReceiver} id={user.id} />
+          {receiver && <SendMessage receiver={receiver} id={user.id} />}
+        </>
+      )}
     </div>
   );
 }

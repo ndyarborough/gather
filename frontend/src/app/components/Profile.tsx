@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { SafeUser } from '../../../../shared-types';
+import Image from "next/image";
 
 interface ProfileProps {
-  user: any;
-  setUser: (user: any) => void;
+  user: SafeUser;
+  setUser: React.Dispatch<React.SetStateAction<SafeUser | null>>;
 }
 
 export default function Profile({ user, setUser }: ProfileProps) {
@@ -24,7 +26,7 @@ export default function Profile({ user, setUser }: ProfileProps) {
       formData.append('profilePic', file);
   
       try {
-        const response = await fetch(`http://localhost:3001/api/users/${user.userId}/uploadProfilePic`, {
+        const response = await fetch(`http://localhost:3001/api/users/${user.id}/uploadProfilePic`, {
           method: "POST",
           body: formData,
         });
@@ -43,7 +45,6 @@ export default function Profile({ user, setUser }: ProfileProps) {
       }
     }
   };
-  
 
   // Check if user exists and has a profilePic
   const profilePicUrl = newProfilePic
@@ -62,9 +63,11 @@ export default function Profile({ user, setUser }: ProfileProps) {
       <p><strong>Name:</strong> {user.fullName}</p>
       <p><strong>Email:</strong> {user.email}</p>
       <div>
-        <img
+        <Image
           src={profilePicUrl} // Use new profile picture or default image
           alt="Profile Picture"
+          width={200}
+          height={350}
           className="w-20 h-20 rounded-full cursor-pointer"
           onClick={() => document.getElementById("profilePicInput")?.click()} // Trigger file input when clicking on image
         />

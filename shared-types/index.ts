@@ -1,55 +1,53 @@
 export interface SafeUser {
-    id: number;
+    id: string;
     email: string;
     fullName: string;
     profilePic?: string;
-    preferences: Preferences;
-    sentMessages: Message[];
 };
 
 export interface Preferences {
-    id: number;
-    userId: number;
+    id: string;
+    userId: string;
     user: SafeUser;
     rsvpVisibility: boolean;
 }
 
 export interface Message {
-    id: number;
-    senderId: number;
-    receiverId: number;
+    id: string;
+    senderId: string;
+    receiverId: string;
     content: string;
     createdAt: Date;
-    eventId?: number;
+    eventId?: string;
     sender: SafeUser;
     receiver: SafeUser;
 }
 
 export interface Event {
-    id: number;
+    id: string;
     name: string;
     description: string;
     date: Date;
     startTime: Date;
     endTime: Date;
-    hostId: number;
+    hostId: string;
     host: SafeUser;
     image?: string;
 }
 
 export interface RSVP {
-    id: number;
-    userId: number;
-    eventId: number;
+    id: string;
+    userId: string;
+    eventId: string;
     createdt: Date;
     user: SafeUser;
     event: Event;
 }
 
 export interface Interest {
-    id: number;
-    userId: number;
-    eventId: number;
+    id: string;
+    userId: string;
+    eventId: string;
     user: SafeUser;
     event: Event;
 }
