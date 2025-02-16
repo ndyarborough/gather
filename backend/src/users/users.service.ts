@@ -42,22 +42,20 @@ export class UsersService {
       profilePic: user.profilePic,
     };
   }
-
-  // Update Profile Pic
   async updateProfilePic(userId: string, profilePicPath: string) {
-    const userIdInt = parseInt(userId, 10); // Convert the userId to an integer
-
+    console.log('Trying to update profile pic...');
+    const userIdInt = parseInt(userId, 10);
+    console.log('userID: ', userIdInt);
     if (isNaN(userIdInt)) {
       throw new Error('Invalid user ID');
     }
 
-    return this.prisma.user.update({
-      where: {
-        id: userIdInt, // Use the converted integer userId
-      },
-      data: {
-        profilePic: profilePicPath, // Update the profilePic path
-      },
+    const updatedUser = await this.prisma.user.update({
+      where: { id: userIdInt },
+      data: { profilePic: profilePicPath },
     });
+
+    console.log('Updated user:', updatedUser);
+    return updatedUser;
   }
 }

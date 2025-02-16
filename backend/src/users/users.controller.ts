@@ -35,24 +35,26 @@ export class UsersController {
   }
 
   @Post(':userId/uploadProfilePic')
-  @UseInterceptors(FileInterceptor('profilePic')) // Intercept the file upload
+  @UseInterceptors(FileInterceptor('profilePic', multerConfig)) // ✅ Apply multerConfig
   async uploadProfilePic(
-    @Param('userId') userId: string, // Get userId as string from the route
-    @UploadedFile() file: Express.Multer.File, // Handle the file upload
+    @Param('userId') userId: string,
+    @UploadedFile() file: Express.Multer.File, // Handle uploaded file
   ) {
-    // Handle file upload
-    if (file) {
-      const profilePicPath = `uploads/${file.filename}`; // Define your path for storing the file
-
-      // Now you can update the user's profilePic using the new file path
-      const updatedUser = await this.usersService.updateProfilePic(
-        userId,
-        profilePicPath,
-      );
-
-      return updatedUser;
-    } else {
+    if (!file) {
       throw new Error('No file uploaded');
     }
+
+    const profilePicPath = `uploads/${file.filename}`; // ✅ Correctly assign file path
+    console.log('Saved file path:', profilePicPath);
+
+    // Update user's profile picture
+    const updatedUser = await this.usersService.updateProfilePic(
+      userId,
+      profilePicPath,
+    );
+
+    return updatedUser
+      ? { success: true, profilePicUrl: profilePicPath }
+      : { success: false, message: 'Failed to update user' };
   }
 }
