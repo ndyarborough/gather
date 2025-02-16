@@ -1,21 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { UserContext } from "@/context/UserContext";
+import { useState, useContext } from "react";
 
 interface EventFormData {
   name: string;
   description: string;
-  date: string; // Date for the event
-  startTime: string; // Start time
-  endTime: string; // End time
-  image?: File | null; // Event image
+  date: string;
+  startTime: string;
+  endTime: string;
+  image?: File | null;
 }
 
-interface CreateEventProps {
-  user: { id: string } | null;
-}
-
-export default function CreateEvent({ user }: CreateEventProps) {
+export default function CreateEvent() {
+  const { user } = useContext(UserContext);
   const [formData, setFormData] = useState<EventFormData>({
     name: "",
     description: "",
@@ -35,47 +33,45 @@ export default function CreateEvent({ user }: CreateEventProps) {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
-    
     setFormData((prev) => ({
       ...prev,
       image: file,
     }));
   };
-  
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+
     if (!user) {
       console.error("You must be logged in to create an event.");
       return;
     }
-  
+
     const formDataToSend = new FormData();
     formDataToSend.append("name", formData.name);
     formDataToSend.append("description", formData.description);
-    formDataToSend.append("date", formData.date); // Add event date
-    formDataToSend.append("startTime", formData.startTime); // Add start time
-    formDataToSend.append("endTime", formData.endTime); // Add end time
-    formDataToSend.append("hostId", user.id.toString()); // Add hostId behind the scenes
-  
+    formDataToSend.append("date", formData.date);
+    formDataToSend.append("startTime", formData.startTime);
+    formDataToSend.append("endTime", formData.endTime);
+    formDataToSend.append("hostId", user.id.toString());
+
     if (formData.image) {
-      formDataToSend.append("image", formData.image); // Add image
+      formDataToSend.append("image", formData.image);
     }
-  
+
     try {
       const response = await fetch("http://localhost:3001/api/events", {
         method: "POST",
         body: formDataToSend,
       });
-  
+
       if (!response.ok) throw new Error("Failed to create event");
-  
+
       console.log("Event created successfully!");
     } catch (error) {
       console.error(error);
     }
   };
-  
 
   return (
     <form className="border-2 border-primary-color w-fit p-4" onSubmit={handleSubmit}>

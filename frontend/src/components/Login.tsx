@@ -1,27 +1,27 @@
 "use client";
 
-import { useState } from "react";
-import { login } from "../../../api/api";
-import { SafeUser } from "../../../../shared-types";
+import { useContext, useState } from "react";
+import { login } from "../../api/api";
+import { UserContext } from "@/context/UserContext";
 
-interface LoginProps {
-  setUser: (user: SafeUser | null) => void;
-}
-
-export default function Login({ setUser }: LoginProps) {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
+  const { setUser } = useContext(UserContext); // ✅ Get setUser from context
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
     const userData = await login(email, password);
-    console.log(userData)
-    if(userData.message) {
+    console.log(userData);
+
+    if (userData.message) {
       setMessage(userData.message);
-      console.log('setting messge')
+      console.log("Setting message");
     } else {
-      setUser(userData); // Store the user in state
+      setUser(userData); // ✅ Store user in context
       console.log("Login successful!", userData);
     }
   };

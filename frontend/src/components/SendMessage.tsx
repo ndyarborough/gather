@@ -1,7 +1,7 @@
 "use client" 
 
 import { useState, useEffect } from "react";
-import { SafeUser } from "../../../../shared-types";
+import { SafeUser } from "../../../shared-types";
 
 interface Message {
   id: string;

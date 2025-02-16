@@ -7,15 +7,15 @@ export default {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    colors: {
+    
+    extend: {
+      colors: {
       "primary-color": "var(--primary-color)",
       "secondary-color": "var(--secondary-color)",
       "accent-color": "var(--accent-color)",
       "pop-color": "var(--pop-color)",
       "action-color": "var(--action-color)",
     },
-    extend: {
-      
     },
   },
   plugins: [],
