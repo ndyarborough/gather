@@ -27,10 +27,10 @@ export default function Login() {
   };
 
   return (
-    <form className="border-2 border-primary-color w-fit p-4" onSubmit={handleSubmit}>
+    <form className="border-2 border-primary w-fit p-4" onSubmit={handleSubmit}>
       <h1>Login</h1>
       <input
-        className="rounded p-2 my-2 block"
+        className="rounded-sm p-2 my-2 block"
         type="email"
         placeholder="Email"
         value={email}
@@ -38,7 +38,7 @@ export default function Login() {
         required
       />
       <input
-        className="rounded p-2 my-2 block"
+        className="rounded-sm p-2 my-2 block"
         type="password"
         placeholder="Password"
         value={password}

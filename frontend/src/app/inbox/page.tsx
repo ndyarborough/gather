@@ -11,11 +11,7 @@ interface Thread {
   messages: Message[];
 }
 
-// interface InboxProps {
-//   setReceiver: (receiver: SafeUser) => void;
-// }
-
-const Inbox = () => {
+const Inbox = ({ onThreadClick }: { onThreadClick: (receiver: SafeUser) => void }) => {
   const { user } = useContext(UserContext);
   const [threads, setThreads] = useState<Thread[]>([]);
   const [noMessages, setNoMessages] = useState(false);
@@ -43,7 +39,7 @@ const Inbox = () => {
   if (!user) return <p className="text-red-500">Not logged in</p>;
 
   return (
-    <div className="flex flex-col border-2 border-primary-color w-fit p-4">
+    <div className="flex flex-col border-2 border-primary w-full p-4">
       <h2 className="text-xl font-bold mb-4">Inbox</h2>
 
       {loading ? (
@@ -59,6 +55,7 @@ const Inbox = () => {
               <div
                 key={thread.id}
                 className="border-b py-2 cursor-pointer hover:bg-gray-200"
+                onClick={() => onThreadClick(thread.participant)}
               >
                 <h3 className="text-lg font-semibold">{thread.participant.fullName}</h3>
                 <p className="text-sm text-gray-700">

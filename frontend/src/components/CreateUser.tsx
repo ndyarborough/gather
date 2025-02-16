@@ -68,10 +68,10 @@ export default function CreateUser() {
   };
 
   return (
-    <form className="border-2 border-primary-color w-fit p-4" onSubmit={handleSubmit}>
+    <form className="border-2 border-primary w-fit p-4" onSubmit={handleSubmit}>
       <h1>Create User</h1>
       <input
-        className="rounded p-2 my-2 block"
+        className="rounded-sm p-2 my-2 block"
         type="email"
         name="email"
         placeholder="Email"
@@ -80,7 +80,7 @@ export default function CreateUser() {
         required
       />
       <input
-        className="rounded p-2 my-2 block"
+        className="rounded-sm p-2 my-2 block"
         type="text"
         name="fullName"
         placeholder="Full Name"
@@ -89,7 +89,7 @@ export default function CreateUser() {
         required
       />
       <input
-        className="rounded p-2 my-2 block"
+        className="rounded-sm p-2 my-2 block"
         type="password"
         name="password"
         placeholder="Password"
@@ -98,7 +98,7 @@ export default function CreateUser() {
         required
       />
       <input
-        className="rounded p-2 my-2 block"
+        className="rounded-sm p-2 my-2 block"
         type="password"
         name="confirmPassword"
         placeholder="Confirm Password"
@@ -107,7 +107,7 @@ export default function CreateUser() {
         required
       />
       <input
-        className="rounded p-2 my-2 block"
+        className="rounded-sm p-2 my-2 block"
         type="file"
         name="profilePic"
         accept="image/*"

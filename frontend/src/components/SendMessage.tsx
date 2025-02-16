@@ -74,7 +74,7 @@ const SendMessage = ({
     };
   
     return (
-      <div className="flex flex-col border-2 border-primary-color w-fit p-4">
+      <div className="flex flex-col border-2 border-primary w-full p-4">
         <h2 className="text-xl font-bold mb-4">
           {receiver ? `Message Thread with ${receiver.fullName}` : "Send Message"}
         </h2>
@@ -110,7 +110,7 @@ const SendMessage = ({
               />
               <button
                 onClick={handleSendMessage}
-                className="btn bg-primary-color text-white p-2 w-full"
+                className="btn bg-primary p-2 w-full"
               >
                 Send Message
               </button>

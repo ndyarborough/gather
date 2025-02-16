@@ -1,6 +1,30 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-primary: var(--primary-color);
+  --color-secondary: var(--secondary-color);
+  --color-accent: var(--accent-color);
+  --color-pop: var(--pop-color);
+  --color-action: var(--action-color);
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
 
 :root {
   --primary-color: #fbfef9ff;
@@ -19,20 +43,21 @@
 
 * {
   color: var(--primary-color);
+  background-color: var(--secondary-color);
   box-sizing: border-box;
 }
 
-input[type='file'] {
-  all: unset;
+h1 {
+  font-size: 2rem;
 }
 
 input, textarea { 
-  all: unset;
   border: 1px solid var(--primary-color);
 }
 
+
 .btn {
-  @apply bg-primary-color text-secondary-color rounded p-2 mt-2;
+  @apply bg-primary text-secondary rounded-sm p-2 mt-2;
 }
 
 body {
