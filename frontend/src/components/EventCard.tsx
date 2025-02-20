@@ -1,64 +1,19 @@
-import { FC, useContext } from "react";
+import { FC } from "react";
 import Image from "next/image";
 import { Event } from "../../../shared-types";
-import { UserContext } from "@/context/UserContext";
 
 interface EventCardProps {
   event: Event;
+  handleInterested: (eventId: string) => void;
+  handleRSVP: (eventId: string) => void;
 }
 
-const EventCard: FC<EventCardProps> = ({ event }) => {
-  const { user } = useContext(UserContext); // Get the logged-in user
+const EventCard: FC<EventCardProps> = ({ event, handleInterested, handleRSVP }) => {
 
-  const handleInterested = async () => {
-    console.log("Interested clicked");
-    if (!user) {
-      console.log("You must be logged in to mark interest.");
-      return;
-    }
+  // Check if the user is already interested or RSVP'd
+ 
 
-    try {
-      const response = await fetch(`http://localhost:3001/api/events/${event.id}/interest`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId: user.id }),
-      });
-
-      if (!response.ok) throw new Error("Failed to mark interest");
-
-      console.log("Marked as interested!");
-    } catch (error) {
-      console.error("Error marking interest:", error);
-      console.log("Failed to mark interest.");
-    }
-  };
-
-  const handleRSVP = async () => {
-    console.log("RSVP clicked");
-    if (!user) {
-      console.log("You must be logged in to RSVP.");
-      return;
-    }
-
-    try {
-      const response = await fetch(`http://localhost:3001/api/events/${event.id}/rsvp`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId: user.id }),
-      });
-
-      if (!response.ok) throw new Error("Failed to RSVP");
-
-      console.log("RSVP confirmed!");
-    } catch (error) {
-      console.error("Error RSVPing:", error);
-      console.log("Failed to RSVP.");
-    }
-  };
+  
 
   return (
     <div className="event-card flex flex-col justify-between my-8 border-2 bg-primary opacity-95 border-primary rounded-sm">
@@ -81,10 +36,10 @@ const EventCard: FC<EventCardProps> = ({ event }) => {
         </p>
       </div>
       <div className="button-row flex flex-row divide-primary divide-x border-t-1">
-        <button className="w-full p-2" onClick={handleInterested}>
+        <button className="w-full p-2" onClick={() => handleInterested(event.id)}>
           Interested
         </button>
-        <button className="w-full p-2" onClick={handleRSVP}>
+        <button className="w-full p-2" onClick={() => handleRSVP(event.id)}>
           RSVP
         </button>
         <button className="w-full p-2">Details</button>

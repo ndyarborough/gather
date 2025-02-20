@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useContext } from "react";
 import { SafeUser, Message } from "../../../../shared-types";
-import { getThreadsForUser } from "../../../api/api";
+import { getThreadsForUser } from "../../api/api";
 import { UserContext } from "@/context/UserContext";
 
 interface Thread {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext, useState } from "react";
-import { login } from "../../api/api";
+import { login } from "../api/api";
 import { UserContext } from "@/context/UserContext";
 
 export default function Login() {

@@ -5,10 +5,18 @@ import {
   Param,
   UseInterceptors,
   UploadedFile,
+  Get,
+  NotFoundException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UsersService } from './users.service';
 import { multerConfig } from '../config/multer-config';
+
+interface PrivateUserData {
+  events: string[];
+  rsvps: string[];
+  interests: string[];
+}
 
 @Controller('users')
 export class UsersController {
@@ -32,6 +40,19 @@ export class UsersController {
     @Body('password') password: string,
   ) {
     return this.usersService.login(email, password);
+  }
+
+  @Get(':id/privateData')
+  async getPrivateUserData(
+    @Param('id') userId: string,
+  ): Promise<PrivateUserData> {
+    const privateData = await this.usersService.getPrivateUserData(
+      Number(userId),
+    );
+    if (!privateData) {
+      throw new NotFoundException('User not found');
+    }
+    return privateData;
   }
 
   @Post(':userId/uploadProfilePic')

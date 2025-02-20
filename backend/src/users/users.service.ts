@@ -1,6 +1,16 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
+
+interface PrivateUserData {
+  events: string[];
+  rsvps: string[];
+  interests: string[];
+}
 
 @Injectable()
 export class UsersService {
@@ -42,6 +52,28 @@ export class UsersService {
       profilePic: user.profilePic,
     };
   }
+
+  async getPrivateUserData(userId: number): Promise<PrivateUserData> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        hostedEvents: { select: { id: true } },
+        attendingEvents: { select: { id: true } },
+        interestedEvents: { select: { id: true } },
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return {
+      events: user.hostedEvents.map((event) => event.id.toString()),
+      rsvps: user.attendingEvents.map((event) => event.id.toString()),
+      interests: user.interestedEvents.map((event) => event.id.toString()),
+    };
+  }
+
   async updateProfilePic(userId: string, profilePicPath: string) {
     console.log('Trying to update profile pic...');
     const userIdInt = parseInt(userId, 10);

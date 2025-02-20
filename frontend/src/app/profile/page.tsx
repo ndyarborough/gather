@@ -1,21 +1,28 @@
-"use client";
-
-import { useContext } from "react";
+import { useContext, useState, FC } from "react";
 import { UserContext } from "../../context/UserContext";
 import Image from "next/image";
+import EventCard from "@/components/EventCard";
+import { Event } from "../../../../shared-types";
 
-export default function Profile() {
+interface ProfileProps {
+  handleInterested: (eventId: string) => void;
+  handleRSVP: (eventId: string) => void;
+  hostedEvents: Event[];
+  attendingEvents: Event[];
+  interestedEvents: Event[];
+}
+
+const Profile: FC<ProfileProps> = ({handleInterested, handleRSVP, hostedEvents, attendingEvents, interestedEvents}) => {
   const { user, setUser } = useContext(UserContext);
-  console.log(user)
-  const handleProfilePicChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const [activeTab, setActiveTab] = useState<"hosting" | "rsvps" | "interested">("hosting");
+
+  // Fetch event details for Hosting, RSVPs, and Interested events  
+  const handleProfilePicChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || !user) return;
 
     const formData = new FormData();
     formData.append("profilePic", file);
-    console.log(file);
     try {
       const response = await fetch(
         `http://localhost:3001/api/users/${user.id}/uploadProfilePic`,
@@ -26,20 +33,15 @@ export default function Profile() {
       );
 
       const data = await response.json();
-      console.log(data);
       if (response.ok && data.profilePicUrl) {
-        setUser(
-          (prevUser) =>
-            prevUser && { ...prevUser, profilePic: data.profilePicUrl }
-        );
+        setUser(prevUser => prevUser && { ...prevUser, profilePic: data.profilePicUrl });
       }
     } catch (error) {
       console.error("Error uploading profile picture:", error);
     }
   };
 
-  if (!user)
-    return <div className="border-2 border-primary p-4">Not logged in</div>;
+  if (!user) return <div className="border-2 border-primary p-4">Not logged in</div>;
 
   return (
     <div className="bg-primary border-2 w-full border-primary p-4">
@@ -69,16 +71,63 @@ export default function Profile() {
           <p>{user.email}</p>
         </div>
       </div>
+
+      {/* Tabs for Hosting, RSVPs, Interested */}
       <div className="user-events w-full mx-auto max-w-[800px] border-1 rounded-lg overflow-hidden">
         <div className="divide-x flex flex-row border-b-1">
-          <button className="w-full">Hosting</button>
-          <button className="w-full">RSVPs</button>
-          <button className="w-full">Interested</button>
+          <button
+            className={`w-full p-2 ${activeTab === "hosting" ? "bg-gray-300" : ""}`}
+            onClick={() => setActiveTab("hosting")}
+          >
+            Hosting
+          </button>
+          <button
+            className={`w-full p-2 ${activeTab === "rsvps" ? "bg-gray-300" : ""}`}
+            onClick={() => setActiveTab("rsvps")}
+          >
+            RSVPs
+          </button>
+          <button
+            className={`w-full p-2 ${activeTab === "interested" ? "bg-gray-300" : ""}`}
+            onClick={() => setActiveTab("interested")}
+          >
+            Interested
+          </button>
         </div>
-        <div className="event-display min-h-50">
 
-        </div>
+       {/* Display Events Based on Active Tab */}
+<div className="event-display min-h-50 p-4">
+  {activeTab === "hosting" &&
+    (hostedEvents.length ? (
+      hostedEvents.map((event) => (
+        <EventCard handleInterested={handleInterested} handleRSVP={handleRSVP} key={event.id || `${event.name}-${crypto.randomUUID()}`} event={event} />
+      ))
+    ) : (
+      <p>No events hosted</p>
+    ))}
+
+  {activeTab === "rsvps" &&
+    (attendingEvents.length ? (
+      attendingEvents.map((event) => (
+        <EventCard handleInterested={handleInterested} handleRSVP={handleRSVP} key={event.id || `${event.name}-${crypto.randomUUID()}`} event={event} />
+      ))
+    ) : (
+      <p>No RSVPs</p>
+    ))}
+
+  {activeTab === "interested" &&
+    (interestedEvents.length ? (
+      interestedEvents.map((event) => (
+        <EventCard handleInterested={handleInterested} handleRSVP={handleRSVP} key={event.id || `${event.name}-${crypto.randomUUID()}`} event={event} />
+      ))
+    ) : (
+      <p>No interested events</p>
+    ))}
+</div>
+
       </div>
     </div>
   );
 }
+
+export default Profile;

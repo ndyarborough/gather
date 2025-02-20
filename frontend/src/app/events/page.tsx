@@ -1,38 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Event } from "../../../../shared-types";
 import EventCard from "@/components/EventCard";
+import { getEvents } from "@/api/api";
 
-export default function Events() {
+interface EventsProps {
+  handleInterested: (eventId: string) => void;
+  handleRSVP: (eventId: string) => void
+}
+
+const Events: FC<EventsProps> = ({handleInterested, handleRSVP}) => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+
   useEffect(() => {
     const fetchEvents = async () => {
-      try {
-        const response = await fetch("http://localhost:3001/api/events");
-        if (!response.ok) throw new Error("Failed to fetch events");
+      const eventsData = await getEvents();
+      setEvents(eventsData);
+      setLoading(false)
+    }
 
-        const data = await response.json();
-        const parsedEvents = data.map((event: Event) => ({
-          ...event,
-          id: Number(event.id),
-          hostId: Number(event.hostId),
-        }));
-
-        setEvents(parsedEvents);
-      } catch (err) {
-        setError("Failed to fetch events");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchEvents();
-  }, []);
-
+  }, [])
+  
   if (loading) return <p>Loading events...</p>;
   if (error) return <p>{error}</p>;
 
@@ -41,9 +34,11 @@ export default function Events() {
       <h1>All Events</h1>
       <div className="events-list grid grid-cols-3 gap-4">
         {events.map((event) => (
-          <EventCard key={event.id} event={event} />
+          <EventCard handleInterested={handleInterested} handleRSVP={handleRSVP} key={event.id} event={event} />
         ))}
       </div>
     </div>
   );
 }
+
+export default Events;

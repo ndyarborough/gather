@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -11,51 +11,124 @@ export class EventsService {
     date: Date,
     startTime: Date,
     endTime: Date,
-    hostId: string,
+    hostId: number,
     imagePath?: string,
   ) {
     return this.prisma.event.create({
       data: {
         name,
         description,
-        date: new Date(date),
-        startTime: new Date(startTime),
-        endTime: new Date(endTime),
-        hostId: parseInt(hostId as unknown as string, 10), // Convert to integer
+        date,
+        startTime,
+        endTime,
+        hostId,
         image: imagePath,
       },
     });
   }
 
-  async updateRSVPStatus(
-    userId: number,
-    eventId: number,
-    status: 'RSVP' | 'INTEREST',
-  ) {
-    return this.prisma.$transaction(async (prisma) => {
-      // Remove any existing RSVP or interest
-      await prisma.rSVP.deleteMany({
-        where: { userId, eventId },
-      });
+  async getEvents() {
+    return this.prisma.event.findMany();
+  }
 
-      await prisma.interest.deleteMany({
-        where: { userId, eventId },
-      });
+  async findEventById(eventId: number) {
+    const event = await this.prisma.event.findUnique({
+      where: { id: eventId },
+    });
+    return event;
+  }
 
-      // Add the new status
-      if (status === 'RSVP') {
-        return prisma.rSVP.create({
-          data: { userId, eventId },
-        });
-      } else if (status === 'INTEREST') {
-        return prisma.interest.create({
-          data: { userId, eventId },
-        });
-      }
+  async rsvp(eventId: number, userId: number) {
+    // Ensure the event and user exist
+    const event = await this.prisma.event.findUnique({
+      where: { id: eventId },
+    });
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!event || !user) {
+      throw new NotFoundException('Event or User not found');
+    }
+
+    // Remove from interest if user is already interested
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        interestedEvents: { disconnect: { id: eventId } },
+      },
+    });
+
+    // Add to RSVP
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        attendingEvents: { connect: { id: eventId } },
+      },
+      include: {
+        interestedEvents: true,
+        attendingEvents: true,
+      },
     });
   }
 
-  async getEvents() {
-    return this.prisma.event.findMany();
+  async unRsvp(eventId: number, userId: number) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        attendingEvents: { disconnect: { id: eventId } },
+      },
+      include: {
+        interestedEvents: true,
+        attendingEvents: true,
+      },
+    });
+  }
+
+  async markInterest(eventId: number, userId: number) {
+    // Ensure the event and user exist
+    const event = await this.prisma.event.findUnique({
+      where: { id: eventId },
+    });
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!event || !user) {
+      throw new NotFoundException('Event or User not found');
+    }
+
+    // Remove from RSVP if user is already attending
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        attendingEvents: { disconnect: { id: eventId } },
+      },
+    });
+
+    // Add to Interested
+    return this.prisma.user.update({
+      where: { id: userId },
+      include: {
+        interestedEvents: true,
+        attendingEvents: true,
+      },
+      data: {
+        interestedEvents: { connect: { id: eventId } },
+      },
+    });
+  }
+
+  async removeInterest(eventId: number, userId: number) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        interestedEvents: { disconnect: { id: eventId } },
+      },
+      include: {
+        interestedEvents: true, // Ensures the interested events are returned
+        attendingEvents: true, // Ensures the attending events are returned
+      },
+    });
   }
 }

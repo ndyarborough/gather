@@ -43,37 +43,45 @@ export default function CreateEvent() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+  
     if (!user) {
       console.error("You must be logged in to create an event.");
       return;
     }
-
+  
+    // Convert startTime and endTime to proper ISO strings
+    const formattedStartTime = new Date(`${formData.date}T${formData.startTime}:00`).toISOString();
+    const formattedEndTime = new Date(`${formData.date}T${formData.endTime}:00`).toISOString();
+  
     const formDataToSend = new FormData();
     formDataToSend.append("name", formData.name);
     formDataToSend.append("description", formData.description);
-    formDataToSend.append("date", formData.date);
-    formDataToSend.append("startTime", formData.startTime);
-    formDataToSend.append("endTime", formData.endTime);
+    formDataToSend.append("date", new Date(formData.date).toISOString());
+    formDataToSend.append("startTime", formattedStartTime);
+    formDataToSend.append("endTime", formattedEndTime);
     formDataToSend.append("hostId", user.id.toString());
-
+  
     if (formData.image) {
       formDataToSend.append("image", formData.image);
     }
-
+  
     try {
       const response = await fetch("http://localhost:3001/api/events", {
         method: "POST",
         body: formDataToSend,
       });
-
+  
       if (!response.ok) throw new Error("Failed to create event");
-
-      console.log("Event created successfully!");
+  
+      const createdEvent = await response.json(); // Get the newly created event data
+  
+      console.log("Event created successfully!", createdEvent);
+  
+  
     } catch (error) {
       console.error(error);
     }
-  };
+  };  
 
   return (
     <div className="w-full p-4 border-2 border-primary">

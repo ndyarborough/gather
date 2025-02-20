@@ -18,5 +18,5 @@
     "forceConsistentCasingInFileNames": true,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false
-  }
+  },
 }
