@@ -5,6 +5,7 @@ import {
   Body,
   UseInterceptors,
   UploadedFile,
+  Param,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { EventsService } from './events.service';
@@ -40,5 +41,25 @@ export class EventsController {
   @Get()
   getAll() {
     return this.eventsService.getEvents();
+  }
+
+  @Post(':eventId/rsvp')
+  rsvpToEvent(
+    @Param('eventId') eventId: string, // Change from number to string
+    @Body('userId') userId: number,
+  ) {
+    return this.eventsService.updateRSVPStatus(userId, Number(eventId), 'RSVP'); // Convert to number
+  }
+
+  @Post(':eventId/interest')
+  markInterest(
+    @Param('eventId') eventId: string, // Change from number to string
+    @Body('userId') userId: number,
+  ) {
+    return this.eventsService.updateRSVPStatus(
+      userId,
+      Number(eventId),
+      'INTEREST',
+    ); // Convert to number
   }
 }

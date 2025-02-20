@@ -19,11 +19,39 @@ export class EventsService {
         name,
         description,
         date: new Date(date),
-        startTime: new Date(`${date}T${startTime}:00Z`),
-        endTime: new Date(`${date}T${endTime}:00Z`),
+        startTime: new Date(startTime),
+        endTime: new Date(endTime),
         hostId: parseInt(hostId as unknown as string, 10), // Convert to integer
         image: imagePath,
       },
+    });
+  }
+
+  async updateRSVPStatus(
+    userId: number,
+    eventId: number,
+    status: 'RSVP' | 'INTEREST',
+  ) {
+    return this.prisma.$transaction(async (prisma) => {
+      // Remove any existing RSVP or interest
+      await prisma.rSVP.deleteMany({
+        where: { userId, eventId },
+      });
+
+      await prisma.interest.deleteMany({
+        where: { userId, eventId },
+      });
+
+      // Add the new status
+      if (status === 'RSVP') {
+        return prisma.rSVP.create({
+          data: { userId, eventId },
+        });
+      } else if (status === 'INTEREST') {
+        return prisma.interest.create({
+          data: { userId, eventId },
+        });
+      }
     });
   }
 
