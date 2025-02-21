@@ -7,13 +7,14 @@ import { getEvents } from "@/api/api";
 
 interface EventsProps {
   handleInterested: (eventId: string) => void;
-  handleRSVP: (eventId: string) => void
+  handleRSVP: (eventId: string) => void;
+  handleViewProfile: (userId: string) => void;
 }
 
-const Events: FC<EventsProps> = ({handleInterested, handleRSVP}) => {
+const Events: FC<EventsProps> = ({handleViewProfile, handleInterested, handleRSVP}) => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error] = useState<string | null>(null);
 
 
   useEffect(() => {
@@ -34,7 +35,7 @@ const Events: FC<EventsProps> = ({handleInterested, handleRSVP}) => {
       <h1>All Events</h1>
       <div className="events-list grid grid-cols-3 gap-4">
         {events.map((event) => (
-          <EventCard handleInterested={handleInterested} handleRSVP={handleRSVP} key={event.id} event={event} />
+          <EventCard handleViewProfile={handleViewProfile} handleInterested={handleInterested} handleRSVP={handleRSVP} key={event.id} event={event} />
         ))}
       </div>
     </div>

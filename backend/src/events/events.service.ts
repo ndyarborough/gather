@@ -28,12 +28,31 @@ export class EventsService {
   }
 
   async getEvents() {
-    return this.prisma.event.findMany();
+    return this.prisma.event.findMany({
+      include: {
+        host: {
+          select: {
+            id: true,
+            fullName: true,
+            profilePic: true,
+          },
+        },
+      },
+    });
   }
 
   async findEventById(eventId: number) {
     const event = await this.prisma.event.findUnique({
       where: { id: eventId },
+      include: {
+        host: {
+          select: {
+            id: true,
+            fullName: true,
+            profilePic: true,
+          },
+        },
+      },
     });
     return event;
   }

@@ -75,9 +75,7 @@ export default function CreateEvent() {
   
       const createdEvent = await response.json(); // Get the newly created event data
   
-      console.log("Event created successfully!", createdEvent);
-  
-  
+      return createdEvent;
     } catch (error) {
       console.error(error);
     }

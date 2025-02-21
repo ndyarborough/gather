@@ -60,8 +60,7 @@ export default function CreateUser() {
       });
 
       if (!response.ok) throw new Error("Failed to create user");
-
-      console.log("User created successfully!");
+      return response;
     } catch (error) {
       console.error(error);
     }

@@ -7,6 +7,7 @@ import {
   UploadedFile,
   Get,
   NotFoundException,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UsersService } from './users.service';
@@ -40,6 +41,11 @@ export class UsersController {
     @Body('password') password: string,
   ) {
     return this.usersService.login(email, password);
+  }
+
+  @Get(':id')
+  async getUserById(@Param('id', ParseIntPipe) userId: number) {
+    return this.usersService.getUserById(userId);
   }
 
   @Get(':id/privateData')

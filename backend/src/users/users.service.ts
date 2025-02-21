@@ -53,6 +53,14 @@ export class UsersService {
     };
   }
 
+  async getUserById(userId: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!user) throw new UnauthorizedException('no user with this id');
+    return user;
+  }
+
   async getPrivateUserData(userId: number): Promise<PrivateUserData> {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },

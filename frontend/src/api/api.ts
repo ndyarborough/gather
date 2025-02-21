@@ -33,8 +33,7 @@ export const login = async (email: string, password: string) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.log(error);
-    return { message: `Incorrect Username/Password` };
+    return { message: `Incorrect Username/Password: ${error}` };
   }
 };
 
@@ -97,7 +96,6 @@ export const getThreadsForUser = async (userId: string) => {
 export const changeInterest = async (userId: string, eventId: string) => {
   const response = await fetch(`${API_URL}/users/${userId}/privateData`);
   const data = await response.json();
-  console.log(data);
   const isInterested = await data.interests.includes(eventId.toString());
 
   if (isInterested) {
@@ -165,5 +163,13 @@ export const getUserEventIds = async (userId: string) => {
 export const findEventById = async (eventId: string) => {
   const response = await fetch(`${API_URL}/events/${eventId}`);
   const data = await response.json();
+  return data;
+}
+
+export const getUserById = async (userId: string) => {
+  console.log('gljaflksjdfklsdfj')
+  const response = await fetch(`${API_URL}/users/${userId}`);
+  const data = await response.json();
+  console.log(data)
   return data;
 }

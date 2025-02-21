@@ -15,14 +15,11 @@ export default function Login() {
     e.preventDefault();
     
     const userData = await login(email, password);
-    console.log(userData);
 
     if (userData.message) {
       setMessage(userData.message);
-      console.log("Setting message");
     } else {
       setUser(userData); // ✅ Store user in context
-      console.log("Login successful!", userData);
     }
   };
 

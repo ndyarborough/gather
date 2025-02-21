@@ -6,15 +6,12 @@ interface EventCardProps {
   event: Event;
   handleInterested: (eventId: string) => void;
   handleRSVP: (eventId: string) => void;
+  handleViewProfile: (userId: string) => void;
 }
 
-const EventCard: FC<EventCardProps> = ({ event, handleInterested, handleRSVP }) => {
+const EventCard: FC<EventCardProps> = ({ event, handleInterested, handleRSVP, handleViewProfile }) => {
 
   // Check if the user is already interested or RSVP'd
- 
-
-  
-
   return (
     <div className="event-card flex flex-col justify-between my-8 border-2 bg-primary opacity-95 border-primary rounded-sm">
       {event.image && (
@@ -27,6 +24,10 @@ const EventCard: FC<EventCardProps> = ({ event, handleInterested, handleRSVP }) 
         />
       )}
       <div className="p-2 truncate">
+        <div className="flex" onClick={() => handleViewProfile(event.host.id)}>
+          <Image className="rounded-full size-8s" src={`http://localhost:3001/${event.host.profilePic}`} width={40} height={40} alt="profile pic" />
+          <h2>{event.host.fullName}</h2>
+        </div>
         <h2>{event.name}</h2>
         <p>{event.description}</p>
         <p>{new Date(event.date).toLocaleDateString()}</p>
