@@ -2,15 +2,16 @@ import { FC, useEffect, useState } from "react";
 import UserInfo from "./UserInfo";
 import UserTabs from "./UserTabs";
 import EventList from "./EventList";
-import { Event } from "../../../shared-types";
+import { Event, SafeUser } from "../../../shared-types";
 import { getUserById, getUserEventIds, findEventById } from "@/api/api";
 
 interface ViewProfileProps {
   profileId: string;
+  handleThreadClick: (receiver: SafeUser) => void;
 }
 
-const ViewProfile: FC<ViewProfileProps> = ({ profileId }) => {
-  const [user, setUser] = useState<{ fullName: string; email: string; profilePic?: string; id: string } | null>(null);
+const ViewProfile: FC<ViewProfileProps> = ({ profileId, handleThreadClick }) => {
+  const [user, setUser] = useState<SafeUser>({email: '', fullName: '', id: ''});
   const [hostedEvents, setHostedEvents] = useState<Event[]>([]);
   const [attendingEvents, setAttendingEvents] = useState<Event[]>([]);
   const [interestedEvents, setInterestedEvents] = useState<Event[]>([]);
@@ -52,6 +53,7 @@ const ViewProfile: FC<ViewProfileProps> = ({ profileId }) => {
     <div className="bg-primary border-2 w-full border-primary p-4">
       <h1>View Profile</h1>
       <UserInfo user={user || null} isOwnProfile={false} />
+      <button onClick={() => handleThreadClick(user)}>Send Message</button>
       <UserTabs activeTab={activeTab} setActiveTab={setActiveTab} />
       <EventList 
         events={activeTab === "hosting" ? hostedEvents : activeTab === "rsvps" ? attendingEvents : interestedEvents} 

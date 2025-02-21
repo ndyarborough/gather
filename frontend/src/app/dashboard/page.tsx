@@ -119,7 +119,7 @@ const Dashboard = () => {
           <Inbox onThreadClick={handleThreadClick} />
         );
       case "ViewProfile":
-        return <ViewProfile profileId={profileId} />
+        return <ViewProfile handleThreadClick={handleThreadClick} profileId={profileId} />
       default:
         return (
           <Profile
