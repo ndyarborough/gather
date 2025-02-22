@@ -10,7 +10,7 @@ export default function Page() {
   const { user } = useContext(UserContext); // ✅ Get user from context
 
   return (
-    <div className="app gap-4 bg-secondary-color min-h-screen text-secondary-color w-screen p-8">
+    <div className="app p-4">
       {user ? <Dashboard /> : <>
         <CreateUser />
         <Login />

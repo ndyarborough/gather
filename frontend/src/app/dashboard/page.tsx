@@ -76,6 +76,7 @@ const Dashboard = () => {
   const handleInterested = async (eventId: string) => {
     if (!user) return;
     const updatedInterests = await changeInterest(user.id, eventId);
+    console.log(updatedInterests.interestedEvents)
     if (updatedInterests) {
       setInterestedEvents(updatedInterests.interestedEvents);
       setAttendingEvents(updatedInterests.attendingEvents);
@@ -139,7 +140,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="flex min-h-[90dvh] justify-between">
+    <div className="flex min-h-[90dvh]s justify-between">
       <div className="w-fit">
         <SideBar setActivePage={setActivePage} />
       </div>

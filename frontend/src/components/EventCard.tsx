@@ -14,7 +14,7 @@ const EventCard: FC<EventCardProps> = ({ event, handleInterested, handleRSVP, ha
   console.log(event.host.profilePic)
   // Check if the user is already interested or RSVP'd
   return (
-    <div className="event-card flex flex-col justify-between my-8 border-2 bg-primary opacity-95 border-primary rounded-sm">
+    <div className="event-card flex flex-col justify-between my-8 shadow-md shadow-primary rounded-xl overflow-clip">
       {event.image && (
         <Image
           src={`http://localhost:3001/${event.image}`}
@@ -37,7 +37,7 @@ const EventCard: FC<EventCardProps> = ({ event, handleInterested, handleRSVP, ha
           {new Date(event.endTime).toLocaleTimeString()}
         </p>
       </div>
-      <div className="button-row flex flex-row divide-primary divide-x border-t-1">
+      <div className="button-row flex bg-primary text-secondary flex-row divide-secondary divide-x border-t-1">
         <button className="w-full p-2" onClick={() => handleInterested(event.id)}>
           Interested
         </button>

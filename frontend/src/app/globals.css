@@ -27,8 +27,8 @@
 }
 
 :root {
-  --primary-color: #fbfef9ff;
-  --secondary-color: #191923ff;
+  --primary-color: #191923ff;
+  --secondary-color: #fbfef9ff;
   --accent-color: #0e79b2ff;
   --pop-color: #bf1363ff;
   --action-color: #f39237ff;
@@ -42,8 +42,6 @@
 } */
 
 * {
-  color: var(--primary-color);
-  background-color: var(--secondary-color);
   box-sizing: border-box;
 }
 

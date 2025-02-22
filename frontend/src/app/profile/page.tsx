@@ -44,7 +44,7 @@ const Profile: FC<ProfileProps> = ({ handleInterested, handleRSVP, handleViewPro
   if (!user) return <div className="border-2 border-primary p-4">Not logged in</div>;
 
   return (
-    <div className="bg-primary border-2 w-full border-primary p-4">
+    <div className="w-full border-primary p-4">
       <h1>My Profile</h1>
       <UserInfo user={user} isOwnProfile={true} handleProfilePicChange={handleProfilePicChange} setActivePage={setActivePage} setSelectedReceiver={setSelectedReceiver}/>
       <UserTabs activeTab={activeTab} setActiveTab={setActiveTab} />

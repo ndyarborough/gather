@@ -16,7 +16,7 @@ const SideBar = ({
   };
 
   return (
-    <div className="w-64 shadow-md p-4 h-full">
+    <div className="w-64 p-4 h-full">
       <div>
         <h2 className="text-xl font-bold mb-4">Dashboard</h2>
         <ul className="space-y-2">

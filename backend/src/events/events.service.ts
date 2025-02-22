@@ -85,8 +85,16 @@ export class EventsService {
         attendingEvents: { connect: { id: eventId } },
       },
       include: {
-        interestedEvents: true,
-        attendingEvents: true,
+        interestedEvents: {
+          include: {
+            host: true,
+          },
+        },
+        attendingEvents: {
+          include: {
+            host: true,
+          },
+        },
       },
     });
   }
@@ -98,8 +106,16 @@ export class EventsService {
         attendingEvents: { disconnect: { id: eventId } },
       },
       include: {
-        interestedEvents: true,
-        attendingEvents: true,
+        interestedEvents: {
+          include: {
+            host: true,
+          },
+        },
+        attendingEvents: {
+          include: {
+            host: true,
+          },
+        },
       },
     });
   }
@@ -129,8 +145,16 @@ export class EventsService {
     return this.prisma.user.update({
       where: { id: userId },
       include: {
-        interestedEvents: true,
-        attendingEvents: true,
+        interestedEvents: {
+          include: {
+            host: true,
+          },
+        },
+        attendingEvents: {
+          include: {
+            host: true,
+          },
+        },
       },
       data: {
         interestedEvents: { connect: { id: eventId } },
@@ -145,8 +169,16 @@ export class EventsService {
         interestedEvents: { disconnect: { id: eventId } },
       },
       include: {
-        interestedEvents: true, // Ensures the interested events are returned
-        attendingEvents: true, // Ensures the attending events are returned
+        interestedEvents: {
+          include: {
+            host: true,
+          },
+        }, // Ensures the interested events are returned
+        attendingEvents: {
+          include: {
+            host: true,
+          },
+        }, // Ensures the attending events are returned
       },
     });
   }
