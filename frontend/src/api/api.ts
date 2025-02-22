@@ -173,3 +173,8 @@ export const getUserById = async (userId: string) => {
   console.log(data)
   return data;
 }
+
+export const getMessageHistory = async (senderId: string, receiverId: string) => {
+  const response = fetch(`${API_URL}/messages/${senderId}/${receiverId}`);
+  return response;
+}

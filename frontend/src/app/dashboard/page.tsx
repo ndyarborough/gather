@@ -102,6 +102,8 @@ const Dashboard = () => {
             interestedEvents={interestedEvents}
             handleInterested={handleInterested}
             handleRSVP={handleRSVP}
+            setActivePage={setActivePage}
+            setSelectedReceiver={setSelectedReceiver}
           />
         );
       case "Inbox":
@@ -119,7 +121,7 @@ const Dashboard = () => {
           <Inbox onThreadClick={handleThreadClick} />
         );
       case "ViewProfile":
-        return <ViewProfile handleThreadClick={handleThreadClick} profileId={profileId} />
+        return <ViewProfile handleThreadClick={handleThreadClick} profileId={profileId} setActivePage={setActivePage} setSelectedReceiver={setSelectedReceiver} />
       default:
         return (
           <Profile
@@ -129,6 +131,8 @@ const Dashboard = () => {
             interestedEvents={interestedEvents}
             handleInterested={handleInterested}
             handleRSVP={handleRSVP}
+            setActivePage={setActivePage}
+            setSelectedReceiver={setSelectedReceiver}
           />
         );
     }

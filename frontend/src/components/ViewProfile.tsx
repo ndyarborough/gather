@@ -8,9 +8,11 @@ import { getUserById, getUserEventIds, findEventById } from "@/api/api";
 interface ViewProfileProps {
   profileId: string;
   handleThreadClick: (receiver: SafeUser) => void;
+  setActivePage: (page: "Profile" | "Inbox" | "CreateEvent" | "Events" | "SendMessage") => void;
+  setSelectedReceiver: (user: SafeUser) => void;
 }
 
-const ViewProfile: FC<ViewProfileProps> = ({ profileId, handleThreadClick }) => {
+const ViewProfile: FC<ViewProfileProps> = ({ profileId, handleThreadClick, setActivePage, setSelectedReceiver }) => {
   const [user, setUser] = useState<SafeUser>({email: '', fullName: '', id: ''});
   const [hostedEvents, setHostedEvents] = useState<Event[]>([]);
   const [attendingEvents, setAttendingEvents] = useState<Event[]>([]);
@@ -52,7 +54,7 @@ const ViewProfile: FC<ViewProfileProps> = ({ profileId, handleThreadClick }) => 
   return (
     <div className="bg-primary border-2 w-full border-primary p-4">
       <h1>View Profile</h1>
-      <UserInfo user={user || null} isOwnProfile={false} />
+      <UserInfo user={user || null} isOwnProfile={false} setActivePage={setActivePage} setSelectedReceiver={setSelectedReceiver} />
       <button onClick={() => handleThreadClick(user)}>Send Message</button>
       <UserTabs activeTab={activeTab} setActiveTab={setActiveTab} />
       <EventList 

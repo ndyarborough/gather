@@ -1,6 +1,6 @@
 import { useContext, useState, FC } from "react";
 import { UserContext } from "../../context/UserContext";
-import { Event } from "../../../../shared-types";
+import { Event, SafeUser } from "../../../../shared-types";
 import UserInfo from "@/components/UserInfo";
 import UserTabs from "@/components/UserTabs";
 import EventList from "@/components/EventList";
@@ -9,12 +9,14 @@ interface ProfileProps {
   handleInterested: (eventId: string) => void;
   handleRSVP: (eventId: string) => void;
   handleViewProfile: (userId: string) => void;
+  setActivePage: (page: "Profile" | "Inbox" | "CreateEvent" | "Events" | "SendMessage") => void;
+  setSelectedReceiver: (user: SafeUser) => void;
   hostedEvents: Event[];
   attendingEvents: Event[];
   interestedEvents: Event[];
 }
 
-const Profile: FC<ProfileProps> = ({ handleInterested, handleRSVP, handleViewProfile, hostedEvents, attendingEvents, interestedEvents }) => {
+const Profile: FC<ProfileProps> = ({ handleInterested, handleRSVP, handleViewProfile, hostedEvents, attendingEvents, interestedEvents, setActivePage, setSelectedReceiver }) => {
   const { user, setUser } = useContext(UserContext);
   const [activeTab, setActiveTab] = useState<"hosting" | "rsvps" | "interested">("hosting");
 
@@ -44,7 +46,7 @@ const Profile: FC<ProfileProps> = ({ handleInterested, handleRSVP, handleViewPro
   return (
     <div className="bg-primary border-2 w-full border-primary p-4">
       <h1>My Profile</h1>
-      <UserInfo user={user} isOwnProfile={true} handleProfilePicChange={handleProfilePicChange} />
+      <UserInfo user={user} isOwnProfile={true} handleProfilePicChange={handleProfilePicChange} setActivePage={setActivePage} setSelectedReceiver={setSelectedReceiver}/>
       <UserTabs activeTab={activeTab} setActiveTab={setActiveTab} />
       <EventList
         events={activeTab === "hosting" ? hostedEvents : activeTab === "rsvps" ? attendingEvents : interestedEvents}

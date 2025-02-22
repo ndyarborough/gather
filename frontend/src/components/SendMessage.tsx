@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { SafeUser } from "../../../shared-types";
+import { getMessageHistory } from "@/api/api";
 
 interface Message {
   id: string;
@@ -25,19 +26,14 @@ const SendMessage = ({
     // Fetch the message history when component mounts or when receiver changes
     useEffect(() => {
       if (!id || !receiver) return;
-  
-      fetch(`http://localhost:3001/api/messages/${id}/${receiver.id}`)
-        .then((res) => {
-          if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-          return res.json();
-        })
-        .then((data: Message[]) => {
-          setMessages(data);
-        })
-        .catch((err) => {
-          console.error("Error fetching message history:", err);
-          setError("Failed to load message history.");
-        });
+
+      const fetchThreadHistory = async () => {
+        const messageData = await getMessageHistory(id, receiver.id);
+        const messageJson = await messageData.json();
+        setMessages(messageJson);
+      }
+      
+      fetchThreadHistory();
     }, [id, receiver]);
   
     const handleSendMessage = () => {

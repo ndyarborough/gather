@@ -10,7 +10,8 @@ interface EventCardProps {
 }
 
 const EventCard: FC<EventCardProps> = ({ event, handleInterested, handleRSVP, handleViewProfile }) => {
-
+  if (!event) return;
+  console.log(event.host.profilePic)
   // Check if the user is already interested or RSVP'd
   return (
     <div className="event-card flex flex-col justify-between my-8 border-2 bg-primary opacity-95 border-primary rounded-sm">
