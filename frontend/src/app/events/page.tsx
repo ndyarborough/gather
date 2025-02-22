@@ -1,45 +1,30 @@
 "use client";
 
-import { FC, useEffect, useState } from "react";
-import { Event } from "../../../../shared-types";
-import EventCard from "@/components/EventCard";
-import { getEvents } from "@/api/api";
+import { FC, useContext } from "react";
+import EventList from "@/components/EventList";
+import { EventsContext } from "./context/EventsContext";
 
 interface EventsProps {
-  handleInterested: (eventId: string) => void;
-  handleRSVP: (eventId: string) => void;
   handleViewProfile: (userId: string) => void;
 }
 
-const Events: FC<EventsProps> = ({handleViewProfile, handleInterested, handleRSVP}) => {
-  const [events, setEvents] = useState<Event[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error] = useState<string | null>(null);
+const Events: FC<EventsProps> = ({ handleViewProfile }) => {
+  const { events, loading } = useContext(EventsContext);
 
-
-  useEffect(() => {
-    const fetchEvents = async () => {
-      const eventsData = await getEvents();
-      setEvents(eventsData);
-      setLoading(false)
-    }
-
-    fetchEvents();
-  }, [])
-  
   if (loading) return <p>Loading events...</p>;
-  if (error) return <p>{error}</p>;
 
   return (
-    <div className="border-2 border-primary w-full p-4">
+    <div className="w-full p-4">
       <h1>All Events</h1>
-      <div className="events-list grid grid-cols-3 gap-4">
-        {events.map((event) => (
-          <EventCard handleViewProfile={handleViewProfile} handleInterested={handleInterested} handleRSVP={handleRSVP} key={event.id} event={event} />
-        ))}
+      <div className="events-list gap-4">
+        <EventList 
+          events={events} 
+          handleViewProfile={handleViewProfile} 
+          emptyMessage="No events"
+        />
       </div>
     </div>
   );
-}
+};
 
 export default Events;

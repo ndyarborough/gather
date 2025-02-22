@@ -49,7 +49,7 @@ const UserInfo: FC<UserInfoProps> = ({ user, isOwnProfile, handleProfilePicChang
       <div className="space-y-1">
         <p>{user.fullName}</p>
         <p>{user.email}</p>
-        <button onClick={handleSendMessage}>Send Message</button>
+        <button className="btn" onClick={handleSendMessage}>Send Message</button>
       </div>
     </div>
   );

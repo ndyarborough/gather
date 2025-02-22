@@ -167,14 +167,24 @@ export const findEventById = async (eventId: string) => {
 }
 
 export const getUserById = async (userId: string) => {
-  console.log('gljaflksjdfklsdfj')
   const response = await fetch(`${API_URL}/users/${userId}`);
   const data = await response.json();
-  console.log(data)
   return data;
 }
 
 export const getMessageHistory = async (senderId: string, receiverId: string) => {
-  const response = fetch(`${API_URL}/messages/${senderId}/${receiverId}`);
+  const response = await fetch(`${API_URL}/messages/${senderId}/${receiverId}`);
   return response;
+}
+
+export const getUserInterests = async (userId: string) => {
+  const response = await fetch(`${API_URL}/users/interested/${userId}`);
+  const data = response.json();
+  return data;
+}
+
+export const getUserRsvps = async (userId: string) => {
+  const response = await fetch(`${API_URL}/users/rsvps/${userId}`);
+  const data = response.json();
+  return data;
 }

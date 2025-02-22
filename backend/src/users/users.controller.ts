@@ -48,6 +48,16 @@ export class UsersController {
     return this.usersService.getUserById(userId);
   }
 
+  @Get('interested/:id')
+  async getUserInterests(@Param('id', ParseIntPipe) userId: number) {
+    return this.usersService.getUserInterests(userId);
+  }
+
+  @Get('rsvps/:id')
+  async getUserRsvps(@Param('id', ParseIntPipe) userId: number) {
+    return this.usersService.getUserRsvps(userId);
+  }
+
   @Get(':id/privateData')
   async getPrivateUserData(
     @Param('id') userId: string,

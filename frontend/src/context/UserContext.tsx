@@ -1,42 +1,106 @@
 "use client";
 
-import { createContext, useState, useEffect, ReactNode } from "react";
-import { SafeUser } from "../../../shared-types";
+import { createContext, useState, useEffect, ReactNode, useContext } from "react";
+import { SafeUser, Event } from "../../../shared-types";
+import { changeInterest, changeRSVP, findEventById, getUserEventIds } from "@/api/api";
+import { EventsContext } from "@/app/events/context/EventsContext";
 
 interface UserContextType {
   user: SafeUser | null;
   setUser: React.Dispatch<React.SetStateAction<SafeUser | null>>;
+  hostedEvents: Event[];
+  attendingEvents: Event[];
+  handleAttending: (eventId: string) => void;
+  interestedEvents: Event[];
+  handleInterested: (eventId: string) => void;
 }
 
-export const UserContext = createContext<UserContextType>({ 
-  user: null, 
+export const UserContext = createContext<UserContextType>({
+  user: null,
   setUser: () => {},
+  hostedEvents: [],
+  attendingEvents: [],
+  handleAttending: () => {},
+  interestedEvents: [],
+  handleInterested: () => {},
 });
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
+  const { refreshEvents } = useContext(EventsContext); // Get refreshEvents
   const [user, setUser] = useState<SafeUser | null>(null);
+  const [hostedEvents, setHostedEvents] = useState<Event[]>([]);
+  const [attendingEvents, setAttendingEvents] = useState<Event[]>([]);
+  const [interestedEvents, setInterestedEvents] = useState<Event[]>([]);
+
+  useEffect(() => {
+    const fetchUserEvents = async () => {
+      if (!user) return;
+      try {
+        const hostedEventData = await getUserEventIds(user.id);
+        const { events, interests, rsvps } = hostedEventData;
+
+        const [hosted, attending, interested] = await Promise.all([
+          Promise.all(events.map(findEventById)),
+          Promise.all(rsvps.map(findEventById)),
+          Promise.all(interests.map(findEventById)),
+        ]);
+
+        setHostedEvents(hosted);
+        setAttendingEvents(attending);
+        setInterestedEvents(interested);
+      } catch (error) {
+        console.error("❌ Error fetching user events:", error);
+      }
+    };
+
+    fetchUserEvents();
+  }, [user]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) setUser(JSON.parse(storedUser));
   }, []);
-  
+
   const handleSetUser = (userData: SafeUser | null | ((prevUser: SafeUser | null) => SafeUser | null)) => {
     setUser((prevUser) => {
       const newUser = typeof userData === "function" ? userData(prevUser) : userData;
-
       if (newUser) {
         localStorage.setItem("user", JSON.stringify(newUser));
       } else {
         localStorage.removeItem("user");
       }
-
       return newUser;
     });
   };
 
+  const handleInterested = async (eventId: string) => {
+    if (!user) return;
+    try {
+      const updatedUser = await changeInterest(user.id, eventId);
+      if (updatedUser) {
+        setUser((prev) => prev ? { ...prev, interestedEvents: updatedUser.interestedEvents } : prev);
+        await refreshEvents(); // Refresh events after updating interest
+      }
+    } catch (error) {
+      console.error("❌ Error updating interested events:", error);
+    }
+  };
+
+  const handleAttending = async (eventId: string) => {
+    if (!user) return;
+    try {
+      const updatedUser = await changeRSVP(user.id, eventId);
+      if (updatedUser) {
+        setUser((prev) => prev ? { ...prev, attendingEvents: updatedUser.attendingEvents } : prev);
+        await refreshEvents(); // Refresh events after updating RSVP
+      }
+    } catch (error) {
+      console.error("❌ Error updating RSVPs:", error);
+    }
+  };
+
   return (
-    <UserContext.Provider value={{ user, setUser: handleSetUser }}>
+    <UserContext.Provider value={{ user, setUser: handleSetUser, hostedEvents, interestedEvents, attendingEvents, handleInterested, handleAttending }}>
       {children}
     </UserContext.Provider>
   );

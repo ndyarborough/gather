@@ -26,7 +26,6 @@ const ViewProfile: FC<ViewProfileProps> = ({ profileId, handleThreadClick, setAc
       try {
         // Fetch user data
         const userData = await getUserById(profileId);
-        console.log('sfljsdflsjdfkdsfjsdf')
         setUser(userData);
 
         // Fetch event IDs
@@ -60,8 +59,6 @@ const ViewProfile: FC<ViewProfileProps> = ({ profileId, handleThreadClick, setAc
       <EventList 
         events={activeTab === "hosting" ? hostedEvents : activeTab === "rsvps" ? attendingEvents : interestedEvents} 
         handleViewProfile={() => {}} 
-        handleInterested={() => {}} 
-        handleRSVP={() => {}} 
         emptyMessage={`No ${activeTab} events`} 
       />
     </div>

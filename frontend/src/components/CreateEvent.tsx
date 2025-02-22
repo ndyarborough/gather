@@ -82,7 +82,7 @@ export default function CreateEvent() {
   };  
 
   return (
-    <div className="w-full p-4 border-2 border-primary">
+    <div className="w-full p-4">
         <h1>Create Event</h1>
       <form
         className="max-w-[700px] p-10 mx-auto flex flex-col gap-4"

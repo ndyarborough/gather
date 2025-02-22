@@ -67,7 +67,7 @@ export default function CreateUser() {
   };
 
   return (
-    <form className="border-2 border-primary w-fit p-4" onSubmit={handleSubmit}>
+    <form className="shadow-primary shadow-sm rounded-lg w-fit p-4" onSubmit={handleSubmit}>
       <h1>Create User</h1>
       <input
         className="rounded-sm p-2 my-2 block"

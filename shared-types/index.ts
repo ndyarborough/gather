@@ -39,4 +39,6 @@ export interface Event {
     hostId: string;
     host: SafeUser;
     image?: string;
+    attendees: SafeUser[];
+    interested: SafeUser[];
 }

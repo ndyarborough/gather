@@ -37,6 +37,8 @@ export class EventsService {
             profilePic: true,
           },
         },
+        attendees: true,
+        interested: true,
       },
     });
   }
@@ -52,6 +54,8 @@ export class EventsService {
             profilePic: true,
           },
         },
+        attendees: true,
+        interested: true,
       },
     });
     return event;

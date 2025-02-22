@@ -5,23 +5,19 @@ import { Event } from "../../../shared-types";
 interface EventListProps {
   events: Event[];
   handleViewProfile: (userId: string) => void;
-  handleInterested: (eventId: string) => void;
-  handleRSVP: (eventId: string) => void;
   emptyMessage: string;
 }
 
-const EventList: FC<EventListProps> = ({ events, handleViewProfile, handleInterested, handleRSVP, emptyMessage }) => {
-  if(!events) return;
+const EventList: FC<EventListProps> = ({ events, handleViewProfile, emptyMessage }) => {
+  if(!events) return;  
   return (
-    <div className="event-display grid grid-cols-3 gap-4 min-h-50 p-4">
+    <div className="event-display grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 min-h-50 p-4">
       {events.length ? (
         events.map((event) => (
           <EventCard
             key={event.id || `${event.name}-${crypto.randomUUID()}`}
             event={event}
             handleViewProfile={handleViewProfile}
-            handleInterested={handleInterested}
-            handleRSVP={handleRSVP}
           />
         ))
       ) : (

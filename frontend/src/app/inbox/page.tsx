@@ -39,7 +39,7 @@ const Inbox = ({ onThreadClick }: { onThreadClick: (receiver: SafeUser) => void 
   if (!user) return <p className="text-red-500">Not logged in</p>;
 
   return (
-    <div className="flex flex-col border-2 border-primary w-full p-4">
+    <div className="flex flex-col w-full p-4">
       <h2 className="text-xl font-bold mb-4">Inbox</h2>
 
       {loading ? (

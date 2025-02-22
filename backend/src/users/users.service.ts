@@ -61,6 +61,32 @@ export class UsersService {
     return user;
   }
 
+  async getUserInterests(userId: number) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      include: {
+        interestedEvents: true,
+      },
+    });
+    if (!user) throw new UnauthorizedException('no user with this id');
+    return user.interestedEvents;
+  }
+
+  async getUserRsvps(userId: number) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      include: {
+        attendingEvents: true,
+      },
+    });
+    if (!user) throw new UnauthorizedException('no user with this id');
+    return user.attendingEvents;
+  }
+
   async getPrivateUserData(userId: number): Promise<PrivateUserData> {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
