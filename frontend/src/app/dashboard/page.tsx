@@ -59,7 +59,7 @@ const Dashboard = () => {
       case "CreateEvent":
         return <CreateEvent />;
       case "Events":
-        return <Events handleViewProfile={handleViewProfile} />;
+        return <Events handleViewProfile={handleViewProfile} setActivePage={setActivePage}/>;
       case "SendMessage":
         return selectedReceiver && user?.id ? (
           <SendMessage id={user.id} receiver={selectedReceiver} />
@@ -87,7 +87,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="flex min-h-[90dvh]s justify-between">
+    <div className="flex min-h-[90dvh] justify-between">
       <div className="w-fit">
         <SideBar setActivePage={setActivePage} />
       </div>

@@ -51,7 +51,7 @@ const ViewProfile: FC<ViewProfileProps> = ({ profileId, handleThreadClick, setAc
   }, [profileId]);
 
   return (
-    <div className="bg-primary border-2 w-full border-primary p-4">
+    <div className="w-full p-4">
       <h1>View Profile</h1>
       <UserInfo user={user || null} isOwnProfile={false} setActivePage={setActivePage} setSelectedReceiver={setSelectedReceiver} />
       <button onClick={() => handleThreadClick(user)}>Send Message</button>

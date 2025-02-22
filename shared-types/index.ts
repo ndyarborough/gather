@@ -34,8 +34,8 @@ export interface Event {
     name: string;
     description: string;
     date: Date;
-    startTime: Date;
-    endTime: Date;
+    startTime: string;
+    endTime: string;
     hostId: string;
     host: SafeUser;
     image?: string;

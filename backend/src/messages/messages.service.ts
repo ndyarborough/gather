@@ -42,6 +42,10 @@ export class MessagesService {
           { senderId: receiverId, receiverId: senderId },
         ],
       },
+      include: {
+        sender: true,
+        receiver: true,
+      },
       orderBy: { createdAt: 'asc' },
     });
     return messageData;

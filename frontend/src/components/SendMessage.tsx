@@ -1,121 +1,90 @@
-"use client" 
+"use client";
 
 import { useState, useEffect } from "react";
-import { SafeUser } from "../../../shared-types";
+import { Message, SafeUser } from "../../../shared-types";
 import { getMessageHistory } from "@/api/api";
+import MessageList from "./MessageList";
+import MessageInput from "./MessageInput";
 
-interface Message {
-  id: string;
-  senderId: string;
-  receiverId: string;
-  content: string;
-  createdAt: string;
-}
+const SendMessage = ({ id, receiver }: { id: string; receiver: SafeUser }) => {
+  const [messageContent, setMessageContent] = useState<string>("");
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-const SendMessage = ({
-    id,
-    receiver,
-  }: {
-    id: string;
-    receiver: SafeUser;  // Accept the full receiver object
-  }) => {
-    const [messageContent, setMessageContent] = useState<string>("");
-    const [messages, setMessages] = useState<Message[]>([]);
-    const [error, setError] = useState<string | null>(null);
-  
-    // Fetch the message history when component mounts or when receiver changes
-    useEffect(() => {
-      if (!id || !receiver) return;
+  useEffect(() => {
+    if (!id || !receiver) return;
 
-      const fetchThreadHistory = async () => {
-        const messageData = await getMessageHistory(id, receiver.id);
-        const messageJson = await messageData.json();
-        setMessages(messageJson);
-      }
-      
-      fetchThreadHistory();
-    }, [id, receiver]);
-  
-    const handleSendMessage = () => {
-      if (!messageContent.trim()) {
-        setError("Please enter a message.");
-        return;
-      }
-  
-      const messageData = {
-        senderId: id,
-        receiverId: receiver?.id,
-        content: messageContent,
-      };
-  
-      fetch(`http://localhost:3001/api/messages/${messageData.senderId}/${messageData.receiverId}/${messageData.content}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error(`Failed to send message.`);
-          return res.json();
-        })
-        .then((newMessage: Message) => {
-          setMessages((prevMessages) => [...prevMessages, newMessage]);
-          setMessageContent(""); // Clear the input
-          setError(null); // Clear error if any
-        })
-        .catch((err) => {
-          console.error("Error sending message:", err);
-          setError("Failed to send message.");
-        });
+    const fetchThreadHistory = async () => {
+      const messageData = await getMessageHistory(id, receiver.id);
+      const messageJson = await messageData.json();
+      console.log(messageJson);
+      setMessages(messageJson);
     };
-  
-    return (
-      <div className="flex flex-col border-2 border-primary w-full p-4">
-        <h2 className="text-xl font-bold mb-4">
-          {receiver ? `Message Thread with ${receiver.fullName}` : "Send Message"}
-        </h2>
-  
-        {!receiver ? (
-          <p className="text-gray-500">No thread selected</p>
-        ) : (
-          <>
-            {error && <p className="text-red-500">{error}</p>}
-  
-            <div className="mb-4 max-h-96 overflow-y-auto p-2 border-b">
-              {messages.length === 0 ? (
-                <p className="text-gray-500">No message history yet.</p>
-              ) : (
-                messages.map((message) => (
-                  <div
-                    key={message.id}
-                    className={`py-1 ${message.senderId === id ? "text-blue-600" : "text-gray-700"}`}
-                  >
-                    <strong>{message.senderId === id ? "You" : "Them"}:</strong> {message.content}
-                  </div>
-                ))
-              )}
-            </div>
-  
-            <div className="flex flex-col">
-              <textarea
-                value={messageContent}
-                onChange={(e) => setMessageContent(e.target.value)}
-                rows={3}
-                className="border-2 p-2 mb-4 w-full"
-                placeholder="Type your message..."
-              />
-              <button
-                onClick={handleSendMessage}
-                className="btn bg-primary p-2 w-full"
-              >
-                Send Message
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-    );
+
+    fetchThreadHistory();
+  }, [id, receiver]);
+
+  const handleSendMessage = () => {
+    if (!messageContent.trim()) {
+      setError("Please enter a message.");
+      return;
+    }
+
+    const messageData = {
+      senderId: id,
+      receiverId: receiver.id,
+      content: messageContent,
+    };
+
+    fetch(
+      `http://localhost:3001/api/messages/${messageData.senderId}/${messageData.receiverId}/${messageData.content}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      }
+    )
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to send message.");
+        return res.json();
+      })
+      .then((newMessage: Message) => {
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+        setMessageContent(""); // Clear input
+        setError(null);
+      })
+      .catch((err) => {
+        console.error("Error sending message:", err);
+        setError("Failed to send message.");
+      });
   };
-  
-  export default SendMessage;
-  
+
+  return (
+    <div className="flex flex-col w-full h-full p-4">
+  <h2 className="text-xl font-bold mb-4">
+    {receiver ? `Message Thread with ${receiver.fullName}` : "Send Message"}
+  </h2>
+
+  {!receiver ? (
+    <p className="text-gray-500">No thread selected</p>
+  ) : (
+    <>
+      {error && <p className="text-red-500">{error}</p>}
+
+      {/* Main content container with flex-grow to stretch the message list */}
+      <div className="flex flex-col gap-2 flex-1 overflow-hidden">
+        <MessageList messages={messages} userId={id} />
+
+        <MessageInput
+          messageContent={messageContent}
+          setMessageContent={setMessageContent}
+          handleSendMessage={handleSendMessage}
+        />
+      </div>
+    </>
+  )}
+</div>
+
+  );
+};
+
+export default SendMessage;
