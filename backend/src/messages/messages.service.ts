@@ -35,7 +35,7 @@ export class MessagesService {
 
   // Get all messages between two users
   async getMessageHistory(senderId: number, receiverId: number) {
-    return this.prisma.message.findMany({
+    const messageData = this.prisma.message.findMany({
       where: {
         OR: [
           { senderId, receiverId },
@@ -44,6 +44,7 @@ export class MessagesService {
       },
       orderBy: { createdAt: 'asc' },
     });
+    return messageData;
   }
 
   // Send a "Hi" message to the event host
@@ -51,7 +52,7 @@ export class MessagesService {
     return this.prisma.message.create({
       data: {
         senderId,
-        receiverId: receiverId,
+        receiverId,
         content: 'Hi',
         ...(eventId ? { eventId } : {}), // Only add eventId if it's provided
       },
