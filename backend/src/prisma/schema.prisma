@@ -37,7 +37,6 @@ model Event {
   hostId      Int
   host        User     @relation("UserHostedEvents", fields: [hostId], references: [id], onDelete: Cascade)
   image       String?
-  
   attendees   User[]   @relation("RSVPs")
   interested  User[]   @relation("Interests")
 }

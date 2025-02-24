@@ -12,6 +12,10 @@ interface PrivateUserData {
   interests: string[];
 }
 
+interface EventIdOnly {
+  id: number;
+}
+
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
@@ -102,9 +106,15 @@ export class UsersService {
     }
 
     return {
-      events: user.hostedEvents.map((event) => event.id.toString()),
-      rsvps: user.attendingEvents.map((event) => event.id.toString()),
-      interests: user.interestedEvents.map((event) => event.id.toString()),
+      events: user.hostedEvents.map((event: EventIdOnly) => {
+        return event.id.toString();
+      }),
+      rsvps: user.attendingEvents.map((event: EventIdOnly) => {
+        return event.id.toString();
+      }),
+      interests: user.interestedEvents.map((event: EventIdOnly) => {
+        return event.id.toString();
+      }),
     };
   }
 
