@@ -8,13 +8,15 @@ import CreateEvent from "../../components/CreateEvent";
 import Events from "../events/page";
 import SendMessage from "../../components/SendMessage";
 
-import { SafeUser } from "../../../../shared-types";
+import { SafeUser, Event } from "../../../../shared-types";
 import ViewProfile from "@/components/ViewProfile";
+import EventDetails from "@/components/EventDetails";
 
 const Dashboard = () => {
   const { user } = useContext(UserContext);
 
   const [profileId, setProfileId] = useState<string>("");
+  const [currentEventDetails, setCurrentEventDetails] = useState<Event | null>(null)  
   if (!user) {
     throw new Error(
       "useContext(UserContext) must be used within a UserProvider"
@@ -28,6 +30,7 @@ const Dashboard = () => {
     | "Events"
     | "SendMessage"
     | "ViewProfile"
+    | "EventDetails"
   >("Profile");
   const [selectedReceiver, setSelectedReceiver] = useState<SafeUser | null>(
     null
@@ -36,6 +39,11 @@ const Dashboard = () => {
   const handleViewProfile = (userId: string) => {
     setProfileId(userId);
     setActivePage("ViewProfile");
+  };
+
+  const handleViewEventDetails = (event: Event) => {
+    setActivePage("EventDetails");
+    setCurrentEventDetails(event)
   };
 
   const handleThreadClick = (receiver: SafeUser) => {
@@ -58,7 +66,7 @@ const Dashboard = () => {
       case "CreateEvent":
         return <CreateEvent />;
       case "Events":
-        return <Events handleViewProfile={handleViewProfile} setActivePage={setActivePage}/>;
+        return <Events handleViewProfile={handleViewProfile} handleViewEventDetails={handleViewEventDetails} setActivePage={setActivePage}/>;
       case "SendMessage":
         return selectedReceiver && user?.id ? (
           <SendMessage id={user.id} receiver={selectedReceiver} />
@@ -74,6 +82,11 @@ const Dashboard = () => {
             setSelectedReceiver={setSelectedReceiver}
           />
         );
+      case "EventDetails":
+        if(!currentEventDetails) return;
+        return(
+          <EventDetails event={currentEventDetails} />
+        )
       default:
         return (
           <Profile

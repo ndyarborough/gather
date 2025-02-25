@@ -2,13 +2,15 @@
 import { FC, useContext } from "react";
 import EventList from "@/components/EventList";
 import { EventsContext } from "./context/EventsContext";
+import { Event } from "../../../../shared-types";
 
 interface EventsProps {
   handleViewProfile: (userId: string) => void;
+  handleViewEventDetails: (event: Event) => void;
   setActivePage: (page: "Profile" | "Inbox" | "CreateEvent" | "Events" | 'SendMessage' ) => void;
 }
 
-const Events: FC<EventsProps> = ({ handleViewProfile, setActivePage }) => {
+const Events: FC<EventsProps> = ({ handleViewProfile, handleViewEventDetails, setActivePage }) => {
   const { events, loading } = useContext(EventsContext);
 
   if (loading) return <p>Loading events...</p>;
@@ -22,7 +24,8 @@ const Events: FC<EventsProps> = ({ handleViewProfile, setActivePage }) => {
       <div className="events-list gap-4">
         <EventList 
           events={events} 
-          handleViewProfile={handleViewProfile} 
+          handleViewProfile={handleViewProfile}
+          handleViewEventDetails={handleViewEventDetails}
           emptyMessage="No events"
         />
       </div>

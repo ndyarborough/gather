@@ -1,3 +1,5 @@
+import { getThreads } from "@/utils";
+
 const API_URL = "http://localhost:3001/api";
 
 interface SafeUser {
@@ -43,50 +45,7 @@ export const getThreadsForUser = async (userId: string) => {
     if (!response.ok) throw new Error("Failed to fetch messages");
 
     const messages: Message[] = await response.json();
-
-    // Map to store messages grouped by participantId
-    const threadsMap = new Map<string, Message[]>();
-
-    messages.forEach((message) => {
-      const participant =
-        message.senderId === userId ? message.receiver : message.sender;
-
-      if (!threadsMap.has(participant.id)) {
-        threadsMap.set(participant.id, []);
-      }
-      threadsMap.get(participant.id)?.push(message);
-    });
-
-    // Convert map to an array of thread objects
-    return Array.from(threadsMap.entries()).map(([participantId, messages]) => {
-      const sortedMessages = messages.sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
-
-      return {
-        id: participantId,
-        participant: {
-          id:
-            sortedMessages[0].senderId === userId
-              ? sortedMessages[0].receiver.id
-              : sortedMessages[0].sender.id,
-          email:
-            sortedMessages[0].senderId === userId
-              ? sortedMessages[0].receiver.email
-              : sortedMessages[0].sender.email,
-          fullName:
-            sortedMessages[0].senderId === userId
-              ? sortedMessages[0].receiver.fullName
-              : sortedMessages[0].sender.fullName,
-          profilePic:
-            sortedMessages[0].senderId === userId
-              ? sortedMessages[0].receiver.profilePic
-              : sortedMessages[0].sender.profilePic,
-        },
-        messages: sortedMessages, // Full conversation in descending order
-      };
-    });
+    return getThreads(messages, userId);
   } catch (error) {
     console.error("Error fetching user threads:", error);
     return [];

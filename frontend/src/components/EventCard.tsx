@@ -11,9 +11,10 @@ import FilledHeart from '../imgs/filled_heart.png';
 interface EventCardProps {
   event: Event;
   handleViewProfile: (userId: string) => void;
+  handleViewEventDetails: (event: Event) => void;
 }
 
-const EventCard: FC<EventCardProps> = ({ event, handleViewProfile }) => {
+const EventCard: FC<EventCardProps> = ({ event, handleViewProfile, handleViewEventDetails }) => {
   const { user, handleInterested, handleAttending } = useContext(UserContext);
   if (!event || !user) return;
   const isUserInterested = event.interested?.some(
@@ -39,7 +40,7 @@ const EventCard: FC<EventCardProps> = ({ event, handleViewProfile }) => {
           />
           <h2>{event.host.fullName}</h2>
         </div>
-        <button className="p-2"><Image src={Details} alt="details" width={40} height={40} className="size-5"/></button>
+        <button className="p-2"><Image onClick={() => handleViewEventDetails(event)} src={Details} alt="details" width={40} height={40} className="size-5"/></button>
       </div>
       {event.image && (
         <Image
