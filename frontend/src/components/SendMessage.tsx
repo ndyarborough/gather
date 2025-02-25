@@ -17,7 +17,6 @@ const SendMessage = ({ id, receiver }: { id: string; receiver: SafeUser }) => {
     const fetchThreadHistory = async () => {
       const messageData = await getMessageHistory(id, receiver.id);
       const messageJson = await messageData.json();
-      console.log(messageJson);
       setMessages(messageJson);
     };
 

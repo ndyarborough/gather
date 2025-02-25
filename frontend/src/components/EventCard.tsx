@@ -16,7 +16,6 @@ interface EventCardProps {
 const EventCard: FC<EventCardProps> = ({ event, handleViewProfile }) => {
   const { user, handleInterested, handleAttending } = useContext(UserContext);
   if (!event || !user) return;
-  console.log(event);
   const isUserInterested = event.interested?.some(
     (interestedUser) => user.id === interestedUser.id
   );

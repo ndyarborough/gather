@@ -4,6 +4,7 @@ import { createContext, useState, useEffect, ReactNode, useContext } from "react
 import { SafeUser, Event } from "../../../shared-types";
 import { changeInterest, changeRSVP, findEventById, getUserEventIds } from "@/api/api";
 import { EventsContext } from "@/app/events/context/EventsContext";
+import { ToastContext } from "./ToastContext";
 
 interface UserContextType {
   user: SafeUser | null;
@@ -31,6 +32,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [hostedEvents, setHostedEvents] = useState<Event[]>([]);
   const [attendingEvents, setAttendingEvents] = useState<Event[]>([]);
   const [interestedEvents, setInterestedEvents] = useState<Event[]>([]);
+
+  const toast = useContext(ToastContext);
 
   useEffect(() => {
     const fetchUserEvents = async () => {
@@ -80,6 +83,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       if (updatedUser) {
         setUser((prev) => prev ? { ...prev, interestedEvents: updatedUser.interestedEvents } : prev);
         await refreshEvents(); // Refresh events after updating interest
+        toast?.setToast('updated interested!', 'success')
       }
     } catch (error) {
       console.error("❌ Error updating interested events:", error);

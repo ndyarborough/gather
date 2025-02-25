@@ -1,6 +1,7 @@
 import { UserProvider } from "@/context/UserContext";
 import "./globals.css";
 import { EventsProvider } from "./events/context/EventsContext";
+import { ToastProvider } from "@/context/ToastContext";
 
 export default function RootLayout({
   children,
@@ -10,9 +11,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen w-screen">
-        <EventsProvider>
-          <UserProvider>{children}</UserProvider>
-        </EventsProvider>
+        <ToastProvider>
+          <EventsProvider>
+            <UserProvider>{children}</UserProvider>
+          </EventsProvider>
+        </ToastProvider>
       </body>
     </html>
   );
