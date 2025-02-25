@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { ToastContext } from "@/context/ToastContext";
+import { useContext, useState } from "react";
 
 interface UserFormData {
   email: string;
@@ -18,6 +19,9 @@ export default function CreateUser() {
     confirmPassword: "",
     profilePic: null,
   });
+
+  const toast = useContext(ToastContext);
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -41,7 +45,7 @@ export default function CreateUser() {
 
     // Check if password and confirm password match
     if (formData.password !== formData.confirmPassword) {
-      console.error("Passwords do not match");
+      toast?.setToast('Passwords do not match', 'error');
       return;
     }
 
@@ -58,11 +62,12 @@ export default function CreateUser() {
         method: "POST",
         body: formDataToSend,
       });
-
-      if (!response.ok) throw new Error("Failed to create user");
+      if (!response.ok) return toast?.setToast('Unexpected Server Response', 'error');
+      // If response from regitering user is as expected
+      toast?.setToast('User Account Created', 'success')
       return response;
     } catch (error) {
-      console.error(error);
+      toast?.setToast(`${error} Server may be down`, 'error');
     }
   };
 

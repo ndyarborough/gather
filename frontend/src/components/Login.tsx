@@ -3,21 +3,21 @@
 import { useContext, useState } from "react";
 import { login } from "../api/api";
 import { UserContext } from "@/context/UserContext";
+import { ToastContext } from "@/context/ToastContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
 
   const { setUser } = useContext(UserContext); // ✅ Get setUser from context
-
+  const toast = useContext(ToastContext);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     const userData = await login(email, password);
 
     if (userData.message) {
-      setMessage(userData.message);
+      toast?.setToast(userData.message, 'error');
     } else {
       setUser(userData); // ✅ Store user in context
     }
@@ -42,7 +42,6 @@ export default function Login() {
         onChange={(e) => setPassword(e.target.value)}
         required
       />
-      {message && <p>{message}</p>}
       <button type="submit" className="btn">
         Login
       </button>
