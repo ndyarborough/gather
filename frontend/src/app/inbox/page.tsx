@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState, useContext } from "react";
 import { SafeUser, Message } from "../../../../shared-types";
 import { getThreadsForUser } from "../../api/api";

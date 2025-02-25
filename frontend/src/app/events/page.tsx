@@ -1,4 +1,3 @@
-"use client";
 
 import { FC, useContext } from "react";
 import EventList from "@/components/EventList";

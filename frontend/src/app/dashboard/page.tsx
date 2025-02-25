@@ -1,4 +1,3 @@
-"use client";
 
 import { useContext, useState } from "react";
 import { UserContext } from "../../context/UserContext";
