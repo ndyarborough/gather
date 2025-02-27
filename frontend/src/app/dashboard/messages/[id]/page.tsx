@@ -1,28 +1,50 @@
+'use client';
+import { useState, useEffect, useContext } from "react";
+import { getMessageHistory, getUserById } from "@/api/api";
+import MessageList from "@/components/MessageList";
+import MessageInput from "@/components/MessageInput";
+import { Message, SafeUser } from "../../../../../../shared-types";
+import { useParams } from "next/navigation";
+import { UserContext } from "@/context/UserContext";
 
-import { useState, useEffect } from "react";
-import { Message, SafeUser } from "../../../shared-types";
-import { getMessageHistory } from "@/api/api";
-import MessageList from "./MessageList";
-import MessageInput from "./MessageInput";
+const Thread = () => {
+  const params = useParams();
+  const receiverId = Array.isArray(params.id) ? params.id[0] : params.id; // Ensure userId is always a string
 
-const SendMessage = ({ id, receiver }: { id: string; receiver: SafeUser }) => {
+  const { user } = useContext(UserContext);
+
+  const [id, setId] = useState<string>('');
+  const [receiver, setReceiver] = useState<SafeUser>();
+
   const [messageContent, setMessageContent] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!id || !receiver) return;
-
+  useEffect(() => {  
+    if (!user || !receiverId) return;
+    setId(user.id);
+  
     const fetchThreadHistory = async () => {
-      const messageData = await getMessageHistory(id, receiver.id);
-      const messageJson = await messageData.json();
-      setMessages(messageJson);
+      try {
+        const fetchedReceiver = await getUserById(receiverId);
+        setReceiver(fetchedReceiver);
+  
+        if (!fetchedReceiver) return; // Ensure receiver is set before fetching messages
+  
+        const messageData = await getMessageHistory(user.id, fetchedReceiver.id);
+        const messageJson = await messageData.json();
+        console.log(messageJson);
+        setMessages(messageJson);
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+      }
     };
-
+  
     fetchThreadHistory();
-  }, [id, receiver]);
-
+  }, [receiverId, user]); // Removed 'id' from dependencies
+  
   const handleSendMessage = () => {
+    if(!receiver) return;
     if (!messageContent.trim()) {
       setError("Please enter a message.");
       return;
@@ -33,6 +55,7 @@ const SendMessage = ({ id, receiver }: { id: string; receiver: SafeUser }) => {
       receiverId: receiver.id,
       content: messageContent,
     };
+
 
     fetch(
       `http://localhost:3001/api/messages/${messageData.senderId}/${messageData.receiverId}/${messageData.content}`,
@@ -85,4 +108,4 @@ const SendMessage = ({ id, receiver }: { id: string; receiver: SafeUser }) => {
   );
 };
 
-export default SendMessage;
+export default Thread;

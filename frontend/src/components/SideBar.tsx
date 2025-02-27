@@ -1,39 +1,45 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { UserContext } from "@/context/UserContext";
 import { useContext } from "react";
+import Link from "next/link";
 
-const SideBar = ({
-  setActivePage,
-}: {
-  setActivePage: (page: "Profile" | "Inbox" | "CreateEvent" | "Events") => void;
-}) => {
+const SideBar = () => {
   const { setUser } = useContext(UserContext);
+  const router = useRouter();
 
   const handleSignOut = () => {
     localStorage.removeItem("user");
     setUser(null);
+    router.push("/"); // Redirect to home or login page
   };
 
   return (
     <div className="w-64 p-4 h-full">
-      <div>
-        <h2 className="text-xl font-bold mb-4">Dashboard</h2>
-        <ul className="space-y-2">
-          <li className="cursor-pointer" onClick={() => setActivePage("Profile")}>
+      <h2 className="text-xl font-bold mb-4">Dashboard</h2>
+      <ul className="space-y-2">
+        <li>
+          <Link href="/dashboard/profile" className="block cursor-pointer hover:underline">
             Profile
-          </li>
-          <li className="cursor-pointer" onClick={() => setActivePage("Inbox")}>
-            Inbox
-          </li>
-          <li className="cursor-pointer" onClick={() => setActivePage("CreateEvent")}>
+          </Link>
+        </li>
+        <li>
+          <Link href="/dashboard/messages" className="block cursor-pointer hover:underline">
+            Messages
+          </Link>
+        </li>
+        <li>
+          <Link href="/dashboard/events/create" className="block cursor-pointer hover:underline">
             Create Event
-          </li>
-          <li className="cursor-pointer" onClick={() => setActivePage("Events")}>
+          </Link>
+        </li>
+        <li>
+          <Link href="/dashboard/events" className="block cursor-pointer hover:underline">
             Events
-          </li>
-        </ul>
-      </div>
+          </Link>
+        </li>
+      </ul>
 
       <button className="btn mt-4 w-full" onClick={handleSignOut}>
         Sign out

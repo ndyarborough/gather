@@ -1,6 +1,7 @@
+'use client';
 import { FC } from "react";
 import Image from "next/image";
-import { SafeUser } from "../../../shared-types";
+import Link from "next/link";
 
 interface UserInfoProps {
   user: {
@@ -11,21 +12,13 @@ interface UserInfoProps {
   } | null;
   isOwnProfile: boolean;
   handleProfilePicChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  setActivePage: (page: "Profile" | "Inbox" | "CreateEvent" | "Events" | 'SendMessage' ) => void;
-  setSelectedReceiver: (user: SafeUser) => void;
 }
 
-const UserInfo: FC<UserInfoProps> = ({ user, isOwnProfile, handleProfilePicChange, setActivePage, setSelectedReceiver }) => {
-    if(!user) return;
-
-    const handleSendMessage = () => {
-      setSelectedReceiver(user);
-      setActivePage('SendMessage')
-    }
-
-    return (
+const UserInfo: FC<UserInfoProps> = ({ user, isOwnProfile, handleProfilePicChange }) => {
+  if (!user) return null;
+  return (
     <div className="p-10 flex flex-row gap-4">
-      {user.profilePic !== "/uploads/undefined" ? (
+      {user.profilePic && user.profilePic !== "/uploads/undefined" ? (
         <Image
           src={`http://localhost:3001/${user.profilePic}`}
           alt="Profile Picture"
@@ -49,7 +42,9 @@ const UserInfo: FC<UserInfoProps> = ({ user, isOwnProfile, handleProfilePicChang
       <div className="space-y-1">
         <p>{user.fullName}</p>
         <p>{user.email}</p>
-        <button className="btn" onClick={handleSendMessage}>Send Message</button>
+        <Link href={`/dashboard/messages/${user.id}`} className="btn">
+          Send Message
+        </Link>
       </div>
     </div>
   );

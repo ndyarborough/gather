@@ -11,7 +11,7 @@ const MessageList = ({
   userId: string;
 }) => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
-
+  console.log(messages)
   useEffect(() => {
     // Scroll to the latest message when messages update
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

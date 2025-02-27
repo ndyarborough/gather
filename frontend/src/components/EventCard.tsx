@@ -1,5 +1,6 @@
 import { FC, useContext } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Event } from "../../../shared-types";
 import { UserContext } from "@/context/UserContext";
 import { formatTime } from "@/utils";
@@ -10,27 +11,22 @@ import FilledHeart from '../imgs/filled_heart.png';
 
 interface EventCardProps {
   event: Event;
-  handleViewProfile: (userId: string) => void;
-  handleViewEventDetails: (event: Event) => void;
 }
 
-const EventCard: FC<EventCardProps> = ({ event, handleViewProfile, handleViewEventDetails }) => {
+const EventCard: FC<EventCardProps> = ({ event }) => {
   const { user, handleInterested, handleAttending } = useContext(UserContext);
-  if (!event || !user) return;
+  if (!event || !user) return null;
+
   const isUserInterested = event.interested?.some(
     (interestedUser) => user.id === interestedUser.id
   );
   const isUserAttending = event.attendees?.some(
     (attendee) => user.id === attendee.id
   );
-  // Check if the user is already interested or RSVP'd
   return (
     <div className="event-card flex flex-col justify-between my-8 shadow-md shadow-primary rounded-xl overflow-clip">
       <div className="flex flex-row justify-between">
-        <div
-          className="flex flex-row items-center gap-1 p-1"
-          onClick={() => handleViewProfile(event.host.id)}
-        >
+        <Link href={`/dashboard/profile/${event.host.id}`} className="flex flex-row items-center gap-1 p-1">
           <Image
             className="rounded-full size-8 object-cover"
             src={`http://localhost:3001/${event.host.profilePic}`}
@@ -39,8 +35,10 @@ const EventCard: FC<EventCardProps> = ({ event, handleViewProfile, handleViewEve
             alt="profile pic"
           />
           <h2>{event.host.fullName}</h2>
-        </div>
-        <button className="p-2"><Image onClick={() => handleViewEventDetails(event)} src={Details} alt="details" width={40} height={40} className="size-5"/></button>
+        </Link>
+        <Link href={`/dashboard/events/${event.id}`} className="p-2">
+          <Image src={Details} alt="details" width={40} height={40} className="size-5"/>
+        </Link>
       </div>
       {event.image && (
         <Image
@@ -60,18 +58,12 @@ const EventCard: FC<EventCardProps> = ({ event, handleViewProfile, handleViewEve
         </p>
       </div>
       <div className="button-row flex flex-row justify-between">
-        <button
-          className="p-2"
-          onClick={() => handleInterested(event.id)}
-        >
+        <button className="p-2" onClick={() => handleInterested(event.id)}>
           {isUserInterested
             ? <Image src={FilledHeart} alt='remove from interested' width={40} height={40} className="size-5"/>
             : <Image src={Heart} alt='Interested' width={40} height={40} className="size-5"/>}
         </button>
-        <button
-          className="p-2"
-          onClick={() => handleAttending(event.id)}
-        >
+        <button className="p-2" onClick={() => handleAttending(event.id)}>
           {isUserAttending ? "❌ Cancel RSVP" : <Image src={RSVP} alt='rsvp' width={40} height={40} className="size-5"/>}
         </button>
       </div>

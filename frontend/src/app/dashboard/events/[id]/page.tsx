@@ -1,18 +1,33 @@
-import { FC, useContext } from "react";
-import { Event } from "../../../shared-types";
+'use client';
+import { FC, useContext, useEffect, useState } from "react";
 import { UserContext } from "@/context/UserContext";
 import Image from "next/image";
+import { useParams } from "next/navigation";
+import { Event, SafeUser } from "../../../../../../shared-types";
+import { findEventById } from "@/api/api";
 
-interface EventDetailsProps {
-  event: Event;
-}
 
-const EventDetails: FC<EventDetailsProps> = ({ event }) => {
+const EventDetails: FC = () => {
+  const [event, setEvent] = useState<Event | null>(null);
+  const [isAttending, setIsAttending] = useState<boolean>(false)
+  const {id} = useParams();
   const { user } = useContext(UserContext);
-  if (!user || ! event) return null;
 
-  const isAttending = event.attendees.some((attendee) => attendee.id === user.id);
+  useEffect(() => {
+    if (!user || !id) return;
 
+    const fetchEventData = async () => {
+      const data = await findEventById(id.toString());
+      console.log(data)
+      setEvent(data);
+      await data.attendees.map((attendee: SafeUser) => attendee.id === user.id && setIsAttending(true))
+    }
+    fetchEventData();
+  }, [id, user])
+  console.log(isAttending)
+
+  // const isAttending = event.attendees.some((attendee: SafeUser) => attendee.id === user.id);
+  if(!event) return
   return (
     <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6">
       {/* Event Header */}
@@ -20,9 +35,9 @@ const EventDetails: FC<EventDetailsProps> = ({ event }) => {
         <Image
           src={`http://localhost:3001/${event.image}`}
           alt={event.name}
-          layout="fill"
-          objectFit="cover"
-          className="w-full"
+          className="size-full object-cover"
+          width={200}
+          height={350}
         />
       </div>
 

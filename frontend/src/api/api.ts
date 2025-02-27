@@ -147,3 +147,16 @@ export const getUserRsvps = async (userId: string) => {
   const data = response.json();
   return data;
 }
+
+export const uploadUserProfilePic = async (userId: string, file: File) => {
+  const formData = new FormData();
+  formData.append('profilePic', file);
+
+  const response = await fetch(`${API_URL}/users/${userId}/uploadProfilePic`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  const data = await response.json();
+  return data;
+}

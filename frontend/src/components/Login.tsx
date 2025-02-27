@@ -24,7 +24,7 @@ export default function Login() {
   };
 
   return (
-    <form className="shadow-primary shadow-sm rounded-lg w-fit p-4" onSubmit={handleSubmit}>
+    <form className="shadow-primary shadow-sm rounded-lg p-4" onSubmit={handleSubmit}>
       <h1>Login</h1>
       <input
         className="rounded-sm p-2 my-2 block"

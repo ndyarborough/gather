@@ -1,7 +1,7 @@
 import { UserProvider } from "@/context/UserContext";
 import "./globals.css";
-import { EventsProvider } from "./events/context/EventsContext";
 import { ToastProvider } from "@/context/ToastContext";
+import { EventsProvider } from "@/context/EventsContext";
 
 export default function RootLayout({
   children,

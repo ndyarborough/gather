@@ -3,8 +3,8 @@
 import { createContext, useState, useEffect, ReactNode, useContext } from "react";
 import { SafeUser, Event } from "../../../shared-types";
 import { changeInterest, changeRSVP, findEventById, getUserEventIds } from "@/api/api";
-import { EventsContext } from "@/app/events/context/EventsContext";
 import { ToastContext } from "./ToastContext";
+import { EventsContext } from "./EventsContext";
 
 interface UserContextType {
   user: SafeUser | null;
@@ -14,6 +14,7 @@ interface UserContextType {
   handleAttending: (eventId: string) => void;
   interestedEvents: Event[];
   handleInterested: (eventId: string) => void;
+  updateProfilePic: (profilePic: string) => void;
 }
 
 export const UserContext = createContext<UserContextType>({
@@ -24,6 +25,7 @@ export const UserContext = createContext<UserContextType>({
   handleAttending: () => {},
   interestedEvents: [],
   handleInterested: () => {},
+  updateProfilePic: () => {},
 });
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
@@ -59,18 +61,15 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     fetchUserEvents();
   }, [user]);
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) setUser(JSON.parse(storedUser));
-  }, []);
+
 
   const handleSetUser = (userData: SafeUser | null | ((prevUser: SafeUser | null) => SafeUser | null)) => {
     setUser((prevUser) => {
       const newUser = typeof userData === "function" ? userData(prevUser) : userData;
       if (newUser) {
-        localStorage.setItem("user", JSON.stringify(newUser));
+        // localStorage.setItem("user", JSON.stringify(newUser));
       } else {
-        localStorage.removeItem("user");
+        // localStorage.removeItem("user");
       }
       return newUser;
     });
@@ -103,8 +102,15 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const updateProfilePic = (profilePic: string) => {
+    setUser((prev) => prev ? { ...prev, profilePic } : null);
+    console.log('i am her')
+  };
+  
+  
+
   return (
-    <UserContext.Provider value={{ user, setUser: handleSetUser, hostedEvents, interestedEvents, attendingEvents, handleInterested, handleAttending }}>
+    <UserContext.Provider value={{ user, setUser: handleSetUser, updateProfilePic, hostedEvents, interestedEvents, attendingEvents, handleInterested, handleAttending }}>
       {children}
     </UserContext.Provider>
   );
